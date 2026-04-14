@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grão Mestre - Café de Qualidade</title>
+    <link rel="stylesheet" href="sty.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        .hero {
+            position: relative;
+            height: 100vh;
+            background: url('assets/background.png') no-repeat center center;
+            background-size: cover;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 5%;
+        }
+        .hero-text {
+            flex: 1;
+            color: white;
+            z-index: 2;
+        }
+        .hero-title {
+            font-size: 4rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            opacity: 0;
+            filter: blur(10px);
+        }
+        .hero-subtitle {
+            font-size: 1.5rem;
+            opacity: 0;
+            filter: blur(10px);
+        }
+        .hero-image {
+            flex: 1;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            z-index: 2;
+        }
+        .coffee-hero {
+            width: 60%;
+            transform: translateX(100%) rotate(15deg);
+        }
+    </style>
+</head>
+<body>
+    <section class="hero">
+        <div class="hero-text">
+            <h1 class="hero-title">Grão Mestre</h1>
+            <p class="hero-subtitle">O café que eleva seus sentidos a um novo patamar de excelência</p>
+        </div>
+        <div class="hero-image">
+            <img src="assets/coffehero.png" alt="Coffee Hero" class="coffee-hero">
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const coffeeHero = document.querySelector('.coffee-hero');
+            const heroTitle = document.querySelector('.hero-title');
+            const heroSubtitle = document.querySelector('.hero-subtitle');
+
+            // Animação da imagem: slide in da direita
+            gsap.to(coffeeHero, {
+                x: 0,
+                duration: 1.5,
+                ease: 'power2.out'
+            });
+
+            // Flutuação da imagem
+            gsap.to(coffeeHero, {
+                y: -20,
+                duration: 2,
+                ease: 'power1.inOut',
+                yoyo: true,
+                repeat: -1
+            });
+
+            // Títulos aparecem após 0.6s com fade e blur
+            setTimeout(() => {
+                gsap.to(heroTitle, {
+                    opacity: 1,
+                    filter: 'blur(0px)',
+                    duration: 1,
+                    ease: 'power2.out'
+                });
+                gsap.to(heroSubtitle, {
+                    opacity: 1,
+                    filter: 'blur(0px)',
+                    duration: 1,
+                    ease: 'power2.out',
+                    delay: 0.3
+                });
+            }, 600);
+        });
+    </script>
+</body>
+
+<section id="features-hero" class="features-section">
+    <div class="features-content">
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="icon-wrapper">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"></path>
+                        <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"></path>
+                    </svg>
+                </div>
+                <h3>De Origem Ética</h3>
+                <p>Relações comerciais diretas com agricultores garantindo salários justos e práticas sustentáveis.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="icon-wrapper">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7 2.9 7 2.9s-2.29 6.16-3.29 7.06C2.57 10.9 2 12 2 13.15c0 2.22 1.8 4.05 4 4.05z"></path>
+                        <path d="M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 0 1-11.91 4.97"></path>
+                    </svg>
+                </div>
+                <h3>Torrado em Pequenos Lotes</h3>
+                <p>Torrado semanalmente sob encomenda em nossa instalação local para garantir frescor e sabor máximos.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="icon-wrapper">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M10 2v2"></path><path d="M14 2v2"></path>
+                        <path d="M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h14a4 4 0 1 1 0 8h-1"></path>
+                        <path d="M6 2v2"></path>
+                    </svg>
+                </div>
+                <h3>Perfeitamente Feito</h3>
+                <p>Perfis curados projetados para destacar o terroir único de cada grão.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="canvas-container">
+        <canvas id="hero-canvas"></canvas>
+    </div>
+</section>
+
+</html></content>
+<parameter name="filePath">c:\Users\User\Documents\Portifólio\GMlanding\index.html
