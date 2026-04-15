@@ -6,7 +6,6 @@
     <title>Grão Mestre | Alto Padrão</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
-
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet">
 
     <style>
@@ -18,16 +17,10 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        .font-display {
-            font-family: 'Space Grotesk', sans-serif;
-        }
+        .font-display { font-family: 'Space Grotesk', sans-serif; }
 
         .hero-anim {
             will-change: transform, opacity, filter;
-        }
-
-        #header-logo{
-            background-color: #e5e7eb;
         }
 
         .text-outline {
@@ -50,32 +43,141 @@
             animation: scroll-line 1.5s cubic-bezier(0.77, 0, 0.175, 1) infinite;
         }
 
-        /* Classe para garantir que a imagem ocupe o container no Flip */
         .flip-cup {
             width: 100%;
             height: 100%;
             object-fit: contain;
         }
+
+        /* =========================================
+           MICROINTERAÇÕES DA SEGUNDA DOBRA
+           ========================================= */
+        .feature-item {
+            opacity: 0;
+            filter: blur(14px);
+            transform: translateY(12px);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            background-color: transparent;
+            border: 1px solid transparent;
+            cursor: default;
+            transition:
+                background-color 0.5s ease 0.3s,
+                box-shadow 0.5s ease 0.3s,
+                border-color 0.5s ease 0.3s;
+        }
+
+        .feature-item:hover {
+            background-color: #ffffff;
+            box-shadow: 0 12px 36px -12px rgba(0,0,0,0.08);
+            border-color: #f5f5f4;
+            transition:
+                background-color 0.5s ease 0s,
+                box-shadow 0.5s ease 0s,
+                border-color 0.5s ease 0s;
+        }
+
+        .feature-num {
+            color: #a8a29e;
+            transition: color 0.5s ease 0.3s;
+        }
+        .feature-item:hover .feature-num {
+            color: #1c1917;
+            transition: color 0.5s ease 0s;
+        }
+
+        .feature-line {
+            border-color: rgba(214, 210, 209, 0.6);
+            transition: border-color 0.5s ease 0.3s;
+        }
+        .feature-item:hover .feature-line {
+            border-color: #1c1917;
+            transition: border-color 0.5s ease 0s;
+        }
+
+        .feature-item h3 {
+            transition: transform 0.5s ease 0.3s;
+        }
+        .feature-item:hover h3 {
+            transform: translateY(-2px);
+            transition: transform 0.5s ease 0s;
+        }
+
+        .feature-item p {
+            transition: color 0.5s ease 0.3s, transform 0.5s ease 0.3s;
+        }
+        .feature-item:hover p {
+            color: #444;
+            transform: translateY(-2px);
+            transition: color 0.5s ease 0s, transform 0.5s ease 0s;
+        }
+
+        /* =========================================
+           VÍDEO — SEM GRAYSCALE
+           ========================================= */
+        .media-element {
+            transition: opacity 0.5s ease;
+            will-change: opacity;
+        }
+
+        .glare-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(to bottom,
+                rgba(255,255,255,0) 0%,
+                rgba(255,255,255,0.5) 50%,
+                rgba(255,255,255,0) 100%);
+            transform: translateY(-100%);
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+            z-index: 10;
+        }
+        #media-container:hover .glare-overlay {
+            transform: translateY(100%);
+        }
+
+        /* =========================================
+           SEGUNDA DOBRA — fixed, sobe por baixo da hero
+           ========================================= */
+        #fold-2 {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            min-height: 100vh;
+            z-index: 15;
+            transform: translateY(100%);
+            will-change: transform;
+        }
+
+        #fold-2-spacer {
+            position: relative;
+            z-index: 5;
+        }
+
+        #fold-3 {
+            position: relative;
+            z-index: 5;
+        }
     </style>
 </head>
 <body>
 
+    <!-- NAVBAR -->
     <header class="fixed w-full z-50 top-0 transition-all duration-300" id="navbar">
         <div class="absolute inset-0 bg-white/55 backdrop-blur-sm border-b border-stone-200/40"></div>
         <div class="max-w-[1440px] mx-auto px-6 py-4 relative flex justify-between items-center">
             <div class="flex items-center gap-2 group cursor-pointer">
                 <div class="w-8 h-8 bg-stone-900 text-white flex items-center justify-center rounded-sm transition-transform group-hover:rotate-90 duration-500">
-                    <img src="assets/coffeeLogo.png" alt="">
+                    <img src="assets/coffeeLogo.png" alt="" class="w-5 h-5 object-contain">
                 </div>
                 <span class="font-display font-medium tracking-tight text-lg">GRÃO MESTRE</span>
             </div>
-
             <nav class="hidden md:flex items-center gap-8 text-xs font-mono uppercase tracking-widest text-stone-500">
                 <a href="#" class="hover:text-stone-900 transition-colors">Origem</a>
                 <a href="#" class="hover:text-stone-900 transition-colors">Torra</a>
                 <a href="#" class="hover:text-stone-900 transition-colors">Assinatura</a>
             </nav>
-
             <div class="flex items-center gap-4">
                 <span class="text-xl cursor-pointer hover:text-stone-500 transition-colors">🛒</span>
                 <div class="hidden md:block w-px h-4 bg-stone-300"></div>
@@ -84,13 +186,9 @@
         </div>
     </header>
 
-    <section id="hero-container" class="relative h-screen w-full flex items-center overflow-hidden">
+    <!-- HERO -->
+    <section id="hero-container" class="relative h-screen w-full flex items-center overflow-hidden bg-[#EAEAE5]">
         <canvas id="hero-canvas" class="absolute top-0 left-0 w-full h-full z-0 opacity-40 object-cover"></canvas>
-        
-        <div id="cup-origin" class="absolute inset-0 flex items-center justify-center z-10 pointer-events-none opacity-0">
-             <img src="frames/frame_0240.webp" id="the-cup" class="flip-cup w-[450px]" alt="Xícara Final">
-        </div>
-
         <div class="content-layer relative z-10 container mx-auto px-8 md:px-16 lg:px-24 w-full flex justify-between items-center pt-24">
             <div class="max-w-lg">
                 <h1 class="text-5xl md:text-6xl lg:text-7xl font-medium leading-[1.05] tracking-tight mb-6 text-stone-900">
@@ -126,18 +224,55 @@
         </div>
     </section>
 
-    <section id="section-two" class="h-screen bg-white border-t border-black/10 flex items-center justify-center relative z-20 px-24">
-        <div class="grid grid-cols-2 w-full max-w-6xl items-center gap-20">
-            <div>
-                <h2 class="text-5xl font-medium text-stone-900 mb-6">Precisão Molecular.</h2>
-                <p class="text-stone-500 text-lg leading-relaxed font-light">
-                    Nossa arquitetura de fluxo proprietária sincroniza a deposição de tinta em tempo real.
-                </p>
-            </div>
-            
-            <div id="cup-destination" class="w-full h-[400px] bg-stone-50 rounded-2xl border border-stone-100 flex items-center justify-center p-10">
+    <!-- SPACER — empurra fold-3 para o lugar certo no fluxo -->
+    <div id="fold-2-spacer"></div>
+
+    <!-- SEGUNDA DOBRA — fixed, sobe por baixo -->
+    <section id="fold-2" class="bg-[#F5F5F3] border-t border-stone-200 flex items-center justify-center py-24">
+        <div class="max-w-[1440px] mx-auto px-8 md:px-16 lg:px-24 w-full grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+
+            <div class="flex flex-col gap-6 lg:pr-8">
+
+                <div class="feature-item flex items-start gap-[1.4rem]">
+                    <span class="feature-num font-mono text-[11px] font-semibold tracking-widest pt-[5px] shrink-0">01</span>
+                    <div class="feature-line border-l pl-6">
+                        <h3 class="text-[1.35rem] font-semibold text-neutral-900 tracking-tight mb-2 leading-snug">De Origem Ética.</h3>
+                        <p class="text-[0.875rem] text-neutral-500 leading-relaxed">Relações comerciais diretas com agricultores garantindo salários justos e práticas sustentáveis.</p>
+                    </div>
                 </div>
+
+                <div class="feature-item flex items-start gap-[1.4rem]">
+                    <span class="feature-num font-mono text-[11px] font-semibold tracking-widest pt-[5px] shrink-0">02</span>
+                    <div class="feature-line border-l pl-6">
+                        <h3 class="text-[1.35rem] font-semibold text-neutral-900 tracking-tight mb-2 leading-snug">Torrado em Lotes.</h3>
+                        <p class="text-[0.875rem] text-neutral-500 leading-relaxed">Torrado semanalmente sob encomenda em nossa instalação local para garantir frescor.</p>
+                    </div>
+                </div>
+
+                <div class="feature-item flex items-start gap-[1.4rem]">
+                    <span class="feature-num font-mono text-[11px] font-semibold tracking-widest pt-[5px] shrink-0">03</span>
+                    <div class="feature-line border-l pl-6">
+                        <h3 class="text-[1.35rem] font-semibold text-neutral-900 tracking-tight mb-2 leading-snug">Perfeitamente Feito.</h3>
+                        <p class="text-[0.875rem] text-neutral-500 leading-relaxed">Perfis curados projetados para destacar o terroir único de cada grão.</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="flex justify-center items-center">
+                <div id="media-container" class="relative w-full max-w-[480px] aspect-square rounded-[2rem] overflow-hidden group shadow-[0_20px_50px_-12px_rgba(0,0,0,0.1)] bg-stone-200 cursor-pointer">
+                    <video id="coffee-video" src="assets/cupvideo.mp4" muted playsinline class="media-element absolute inset-0 w-full h-full object-cover"></video>
+                    <img id="coffee-img" src="assets/cupcoffee.png" alt="Cup Coffee" class="media-element absolute inset-0 w-full h-full object-cover opacity-0">
+                    <div class="glare-overlay"></div>
+                </div>
+            </div>
+
         </div>
+    </section>
+
+    <!-- FOLD 3 -->
+    <section id="fold-3" class="h-screen w-full relative z-30 bg-stone-900 flex items-center justify-center">
+        <h2 class="text-4xl font-light text-stone-100 tracking-tight">A jornada continua...</h2>
     </section>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -147,54 +282,61 @@
     <script>
         gsap.registerPlugin(ScrollTrigger, Flip);
 
-        // ========================
-        // 1. ANIMAÇÕES DE TEXTO
-        // ========================
+        // ================================================
+        // 1. HERO — ENTRADA DOS TEXTOS (igual ao código de referência)
+        // ================================================
         const loadTl = gsap.timeline();
-        loadTl.fromTo(".hero-anim", 
-            { y: 40, opacity: 0, filter: "blur(12px)" },
-            { y: 0, opacity: 1, filter: "blur(0px)", duration: 1.2, stagger: 0.12, ease: "power3.out", delay: 0.2 }
+        loadTl.fromTo('.hero-anim',
+            { y: 40, opacity: 0, filter: 'blur(12px)' },
+            { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1.2, stagger: 0.12, ease: 'power3.out', delay: 0.2 }
         );
 
-        gsap.to(".hero-anim", {
+        // ================================================
+        // 2. HERO — SAÍDA DOS TEXTOS (scrub bidirecional)
+        // Exatamente como o código de referência:
+        // stagger 0.08, blur, fade, y:-50, scrub:1
+        // ao voltar o scroll os textos reaparecem na mesma animação
+        // ================================================
+        gsap.to('.hero-anim', {
             y: -50,
             opacity: 0,
-            filter: "blur(12px)",
+            filter: 'blur(12px)',
             stagger: 0.08,
-            ease: "power2.inOut",
+            ease: 'power2.inOut',
             scrollTrigger: {
-                trigger: "#hero-container",
-                start: "top top",
-                end: "+=800",
+                trigger: '#hero-container',
+                start: 'top top',
+                end: '+=800',
                 scrub: 1,
             }
         });
 
-        // ========================
-        // 2. SISTEMA DE CANVAS
-        // ========================
-        const canvas = document.getElementById("hero-canvas");
-        const ctx = canvas.getContext("2d", { alpha: false });
+        // ================================================
+        // 3. CANVAS — carregamento e render dos frames
+        // ================================================
+        const canvas = document.getElementById('hero-canvas');
+        const ctx    = canvas.getContext('2d', { alpha: false });
+
         const FRAME_COUNT = 240;
-        const images = [];
-        const imageSeq = { frame: 0 };
-        let imagesLoaded = 0;
+        const images      = [];
+        const imageSeq    = { frame: 0 };
+        let   imagesLoaded = 0;
 
         function resizeCanvas() {
-            const dpr = window.devicePixelRatio || 1;
+            const dpr  = window.devicePixelRatio || 1;
             const rect = canvas.getBoundingClientRect();
-            canvas.width = rect.width * dpr;
+            canvas.width  = rect.width  * dpr;
             canvas.height = rect.height * dpr;
             ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
             render();
         }
 
         function drawImageCover(img) {
-            const canvasWidth = canvas.clientWidth;
-            const canvasHeight = canvas.clientHeight;
-            const scale = Math.max(canvasWidth / img.width, canvasHeight / img.height);
-            const x = (canvasWidth - img.width * scale) / 2;
-            const y = (canvasHeight - img.height * scale) / 2;
+            const cw    = canvas.clientWidth;
+            const ch    = canvas.clientHeight;
+            const scale = Math.max(cw / img.width, ch / img.height);
+            const x     = (cw - img.width  * scale) / 2;
+            const y     = (ch - img.height * scale) / 2;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
         }
@@ -205,105 +347,117 @@
             if (!img || !img.complete) return;
             drawImageCover(img);
 
-            // Sincronização: Quando chegar no frame final, mostra a imagem real para o Flip
-            if(frameIndex >= FRAME_COUNT - 5) {
-                gsap.set("#cup-origin", { opacity: 1 });
-                gsap.set("#hero-canvas", { opacity: 0 });
+            // Quando chega nos frames finais, mostra a xícara real para o Flip
+            if (frameIndex >= FRAME_COUNT - 5) {
+                gsap.set('#cup-origin',   { opacity: 1 });
+                gsap.set('#hero-canvas',  { opacity: 0 });
             } else {
-                gsap.set("#cup-origin", { opacity: 0 });
-                gsap.set("#hero-canvas", { opacity: 0.4 });
+                gsap.set('#cup-origin',   { opacity: 0 });
+                gsap.set('#hero-canvas',  { opacity: 0.4 });
             }
         }
 
         function preloadFrames() {
             for (let i = 1; i <= FRAME_COUNT; i++) {
-                const img = new Image();
-                const frameNum = String(i).padStart(4, "0");
-                img.src = `frames/frame_${frameNum}.webp`;
-                img.onload = () => { imagesLoaded += 1; if (imagesLoaded === 1) render(); };
+                const img    = new Image();
+                const padded = String(i).padStart(4, '0');
+                img.src      = `frames/frame_${padded}.webp`;
+                img.onload   = () => { imagesLoaded++; if (imagesLoaded === 1) render(); };
                 images.push(img);
             }
         }
 
         resizeCanvas();
         preloadFrames();
-        window.addEventListener("resize", resizeCanvas);
+        window.addEventListener('resize', resizeCanvas);
 
-        // ========================
-        // 3. SCROLLTRIGGER DO CANVAS + FLIP
-        // ========================
-        let frameTween;
+        // ================================================
+        // 4. HERO — TIMELINE PRINCIPAL (pin + frames scrubados)
+        // ================================================
+        let cupIsInDestination = false;
 
         const mainTimeline = gsap.timeline({
             scrollTrigger: {
-                trigger: "#hero-container",
-                start: "top top",
-                end: "+=4000", 
-                scrub: 0.5,
-                pin: true,
+                trigger: '#hero-container',
+                start:   'top top',
+                end:     '+=4000',
+                scrub:   0.5,
+                pin:     true,
+                // quando a hero é despinada, a fold-2 começa a subir
+                onLeave: () => triggerFold2Enter(),
+                onEnterBack: () => triggerFold2Leave(),
             }
         });
 
-        // Animação do Vídeo
+        // Anima os frames
         mainTimeline.to(imageSeq, {
-            frame: FRAME_COUNT - 1,
-            ease: "none",
+            frame:    FRAME_COUNT - 1,
+            ease:     'none',
             onUpdate: render,
         });
 
-        // Animação FLIP (Transição para a próxima seção)
-        let cupIsInDestination = false;
+        // ================================================
+        // 5. SEGUNDA DOBRA — sobe por baixo enquanto a hero despina
+        // O spacer garante que o fold-3 fique no lugar certo
+        // ================================================
+        const fold2     = document.getElementById('fold-2');
+        const spacer    = document.getElementById('fold-2-spacer');
+        const video     = document.getElementById('coffee-video');
+        const coffeeImg = document.getElementById('coffee-img');
 
-        mainTimeline.add(() => {
-            if (!cupIsInDestination) {
-                const cup = document.querySelector("#the-cup");
-                const state = Flip.getState(cup);
-                document.querySelector("#cup-destination").appendChild(cup);
-                Flip.from(state, {
-                    duration: 1,
-                    ease: "power2.inOut",
-                    absolute: true
-                });
-                cupIsInDestination = true;
-            }
-        });
+        function syncSpacerHeight() {
+            spacer.style.height = fold2.offsetHeight + 'px';
+        }
+        syncSpacerHeight();
+        window.addEventListener('resize', syncSpacerHeight);
 
-        ScrollTrigger.create({
-            trigger: "#section-two",
-            start: "top top",
-            end: "bottom bottom",
-            onEnter: () => {
-                if (!cupIsInDestination) {
-                    const cup = document.querySelector("#the-cup");
-                    const state = Flip.getState(cup);
-                    gsap.set("#cup-origin", { opacity: 1 });
-                    document.querySelector("#cup-destination").appendChild(cup);
-                    Flip.from(state, {
-                        duration: 1,
-                        ease: "power2.inOut",
-                        absolute: true
-                    });
-                    cupIsInDestination = true;
-                }
-            },
-            onLeaveBack: () => {
-                if (cupIsInDestination) {
-                    const cup = document.querySelector("#the-cup");
-                    const state = Flip.getState(cup);
-                    gsap.set("#cup-origin", { opacity: 1 });
-                    document.querySelector("#cup-origin").appendChild(cup);
-                    Flip.from(state, {
-                        duration: 0.9,
-                        ease: "power2.inOut",
-                        absolute: true,
-                        onComplete: () => {
-                            gsap.set("#hero-canvas", { opacity: 0 });
-                        }
-                    });
-                    cupIsInDestination = false;
+        // A fold-2 sobe de translateY(100%) → translateY(0%)
+        // atrelada ao scroll que vem logo depois do pin da hero
+        gsap.fromTo(fold2,
+            { y: '100%' },
+            {
+                y:    '0%',
+                ease: 'none',
+                scrollTrigger: {
+                    // dispara depois do pin — o ScrollTrigger do pin ocupa 4000px,
+                    // então o spacer começa logo após isso
+                    trigger: '#fold-2-spacer',
+                    start:   'top bottom',
+                    end:     'top top',
+                    scrub:   1,
                 }
             }
-        });
+        );
+
+        // Anima os textos e vídeo da fold-2 quando ela chega na tela
+        function triggerFold2Enter() {
+            video.style.opacity     = '1';
+            coffeeImg.style.opacity = '0';
+            video.currentTime       = 0;
+            video.playbackRate      = 2.3;
+            video.play();
+
+            gsap.fromTo('.feature-item',
+                { opacity: 0, filter: 'blur(14px)', y: 12 },
+                { opacity: 1, filter: 'blur(0px)',  y: 0,
+                  duration: 0.85, stagger: 0.25, ease: 'power2.out', delay: 0.4 }
+            );
+        }
+
+        function triggerFold2Leave() {
+            gsap.to('.feature-item', {
+                opacity: 0, filter: 'blur(14px)', y: 12,
+                duration: 0.5, stagger: -0.1, ease: 'power2.in'
+            });
+        }
+
+        // ================================================
+        // 6. VÍDEO — ao terminar, troca para imagem estática
+        // ================================================
+        video.onended = () => {
+            video.style.opacity     = '0';
+            coffeeImg.style.opacity = '1';
+        };
 
     </script>
 </body>
