@@ -43,10 +43,13 @@
             animation: scroll-line 1.5s cubic-bezier(0.77, 0, 0.175, 1) infinite;
         }
 
-        .flip-cup {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
+        /* =========================================
+           SPACER — mesmo bg da hero
+           ========================================= */
+        #fold-2-spacer {
+            position: relative;
+            z-index: 5;
+            background-color: #EAEAE5;
         }
 
         /* =========================================
@@ -60,7 +63,7 @@
             border-radius: 1rem;
             background-color: transparent;
             border: 1px solid transparent;
-            cursor: default;
+            cursor: crosshair;
             transition:
                 background-color 0.5s ease 0.3s,
                 box-shadow 0.5s ease 0.3s,
@@ -112,10 +115,10 @@
             transition: color 0.5s ease 0s, transform 0.5s ease 0s;
         }
 
-        /* =========================================
-           VÍDEO — SEM GRAYSCALE
-           ========================================= */
-        .media-element {
+        /* vídeo invisível por padrão — só aparece via JS */
+        #coffee-video,
+        #coffee-img {
+            opacity: 0;
             transition: opacity 0.5s ease;
             will-change: opacity;
         }
@@ -137,6 +140,103 @@
         }
 
         /* =========================================
+           CURSOR CROSSHAIR NO BLOCO DE VÍDEO
+           ========================================= */
+        #media-container {
+            cursor: crosshair;
+        }
+
+        /* =========================================
+           CARDS FLUTUANTES SOBRE O VÍDEO
+           ========================================= */
+        .video-badge {
+            position: absolute;
+            z-index: 20;
+            background: rgba(255, 255, 255, 0.72);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: 0.875rem;
+            box-shadow: 0 8px 32px -8px rgba(0,0,0,0.12), 0 2px 8px -2px rgba(0,0,0,0.06);
+            pointer-events: none;
+            opacity: 0;
+            transform: translateY(8px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .video-badge.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .badge-top-left {
+            top: 1.1rem;
+            left: 1.1rem;
+            padding: 0.7rem 0.9rem;
+            min-width: 130px;
+        }
+
+        .badge-bottom-right {
+            bottom: 1.1rem;
+            right: 1.1rem;
+            padding: 0.8rem 1rem;
+            min-width: 150px;
+        }
+
+        .badge-label {
+            font-family: 'Space Grotesk', monospace;
+            font-size: 9px;
+            font-weight: 500;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: #a8a29e;
+            display: block;
+            margin-bottom: 0.3rem;
+        }
+
+        .badge-value {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            color: #1c1917;
+            line-height: 1;
+            display: block;
+        }
+
+        .badge-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #22c55e;
+            display: inline-block;
+            margin-right: 5px;
+            position: relative;
+            flex-shrink: 0;
+        }
+        .badge-dot::after {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            border-radius: 50%;
+            background: rgba(34, 197, 94, 0.25);
+            animation: pulse-dot 2s ease infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.5); opacity: 0; }
+        }
+
+        .badge-icon {
+            width: 26px;
+            height: 26px;
+            background: #1c1917;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0.45rem;
+        }
+
+        /* =========================================
            SEGUNDA DOBRA — fixed, sobe por baixo da hero
            ========================================= */
         #fold-2 {
@@ -150,14 +250,25 @@
             will-change: transform;
         }
 
-        #fold-2-spacer {
+        #fold-3 {
             position: relative;
             z-index: 5;
         }
 
-        #fold-3 {
-            position: relative;
-            z-index: 5;
+        /* =========================================
+           WATERMARK
+           ========================================= */
+        .watermark-text {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(5rem, 14vw, 14rem);
+            font-weight: 700;
+            line-height: 1;
+            color: transparent;
+            -webkit-text-stroke: 1px rgba(28, 25, 23, 0.06);
+            pointer-events: none;
+            user-select: none;
+            white-space: nowrap;
+            letter-spacing: -0.03em;
         }
     </style>
 </head>
@@ -189,6 +300,7 @@
     <!-- HERO -->
     <section id="hero-container" class="relative h-screen w-full flex items-center overflow-hidden bg-[#EAEAE5]">
         <canvas id="hero-canvas" class="absolute top-0 left-0 w-full h-full z-0 opacity-40 object-cover"></canvas>
+
         <div class="content-layer relative z-10 container mx-auto px-8 md:px-16 lg:px-24 w-full flex justify-between items-center pt-24">
             <div class="max-w-lg">
                 <h1 class="text-5xl md:text-6xl lg:text-7xl font-medium leading-[1.05] tracking-tight mb-6 text-stone-900">
@@ -224,50 +336,112 @@
         </div>
     </section>
 
-    <!-- SPACER — empurra fold-3 para o lugar certo no fluxo -->
-    <div id="fold-2-spacer"></div>
+    <!-- SPACER -->
+    <div id="fold-2-spacer" class="bg-[#EAEAE5]"></div>
 
     <!-- SEGUNDA DOBRA — fixed, sobe por baixo -->
-    <section id="fold-2" class="bg-[#F5F5F3] border-t border-stone-200 flex items-center justify-center py-24">
-        <div class="max-w-[1440px] mx-auto px-8 md:px-16 lg:px-24 w-full grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+    <section id="fold-2" class="bg-[#F5F5F3] overflow-y-auto">
 
-            <div class="flex flex-col gap-6 lg:pr-8">
-
-                <div class="feature-item flex items-start gap-[1.4rem]">
-                    <span class="feature-num font-mono text-[11px] font-semibold tracking-widest pt-[5px] shrink-0">01</span>
-                    <div class="feature-line border-l pl-6">
-                        <h3 class="text-[1.35rem] font-semibold text-neutral-900 tracking-tight mb-2 leading-snug">De Origem Ética.</h3>
-                        <p class="text-[0.875rem] text-neutral-500 leading-relaxed">Relações comerciais diretas com agricultores garantindo salários justos e práticas sustentáveis.</p>
-                    </div>
-                </div>
-
-                <div class="feature-item flex items-start gap-[1.4rem]">
-                    <span class="feature-num font-mono text-[11px] font-semibold tracking-widest pt-[5px] shrink-0">02</span>
-                    <div class="feature-line border-l pl-6">
-                        <h3 class="text-[1.35rem] font-semibold text-neutral-900 tracking-tight mb-2 leading-snug">Torrado em Lotes.</h3>
-                        <p class="text-[0.875rem] text-neutral-500 leading-relaxed">Torrado semanalmente sob encomenda em nossa instalação local para garantir frescor.</p>
-                    </div>
-                </div>
-
-                <div class="feature-item flex items-start gap-[1.4rem]">
-                    <span class="feature-num font-mono text-[11px] font-semibold tracking-widest pt-[5px] shrink-0">03</span>
-                    <div class="feature-line border-l pl-6">
-                        <h3 class="text-[1.35rem] font-semibold text-neutral-900 tracking-tight mb-2 leading-snug">Perfeitamente Feito.</h3>
-                        <p class="text-[0.875rem] text-neutral-500 leading-relaxed">Perfis curados projetados para destacar o terroir único de cada grão.</p>
-                    </div>
-                </div>
-
+        <!-- HEADER DA DOBRA -->
+        <div class="relative w-full overflow-hidden border-b border-stone-200 py-20 px-8 md:px-16 lg:px-24">
+            <div class="absolute inset-0 flex items-center justify-start pl-16 pointer-events-none select-none overflow-hidden z-0">
+                <span class="watermark-text">Grão Mestre</span>
             </div>
-
-            <div class="flex justify-center items-center">
-                <div id="media-container" class="relative w-full max-w-[480px] aspect-square rounded-[2rem] overflow-hidden group shadow-[0_20px_50px_-12px_rgba(0,0,0,0.1)] bg-stone-200 cursor-pointer">
-                    <video id="coffee-video" src="assets/cupvideo.mp4" muted playsinline class="media-element absolute inset-0 w-full h-full object-cover"></video>
-                    <img id="coffee-img" src="assets/cupcoffee.png" alt="Cup Coffee" class="media-element absolute inset-0 w-full h-full object-cover opacity-0">
-                    <div class="glare-overlay"></div>
+            <div class="relative z-10 max-w-[1440px] mx-auto">
+                <div class="inline-flex items-center gap-3 mb-8">
+                    <span class="w-1.5 h-1.5 rounded-full bg-stone-900"></span>
+                    <span class="text-xs font-mono uppercase tracking-[0.25em] text-stone-400">Origem & Excelência</span>
                 </div>
+                <h2 class="font-display leading-[1.0] tracking-tight">
+                    <span class="block text-5xl md:text-6xl lg:text-[5rem] font-semibold text-stone-900">
+                        Café Brasileiro.
+                    </span>
+                    <span class="block text-5xl md:text-6xl lg:text-[5rem] font-light text-stone-400 mt-2">
+                        Os Pilares da Excelência.
+                    </span>
+                </h2>
+                <p class="mt-8 text-base md:text-lg text-stone-500 max-w-2xl font-light leading-relaxed">
+                    O Brasil não é apenas o maior produtor de café do mundo — é o guardião de uma tradição cultivada em altitude, curada pelo tempo e refinada pela obsessão com o detalhe. Cada grão que chega à sua xícara carrega o terroir único das nossas montanhas e o rigor de uma torra que respeita a natureza do grão.
+                </p>
             </div>
-
         </div>
+
+        <!-- CARDS + VÍDEO -->
+        <div id="cards-section" class="flex items-center justify-center py-20 px-8 md:px-16 lg:px-24">
+            <div class="max-w-[1440px] mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+
+                <!-- TEXTOS -->
+                <div class="flex flex-col gap-6 lg:pr-8">
+
+                    <div class="feature-item flex items-start gap-[1.4rem]">
+                        <span class="feature-num font-mono text-[11px] font-semibold tracking-widest pt-[5px] shrink-0">01</span>
+                        <div class="feature-line border-l pl-6">
+                            <h3 class="text-[1.35rem] font-semibold text-neutral-900 tracking-tight mb-2 leading-snug">De Origem Ética.</h3>
+                            <p class="text-[0.875rem] text-neutral-500 leading-relaxed">Relações comerciais diretas com agricultores garantindo salários justos e práticas sustentáveis.</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-item flex items-start gap-[1.4rem]">
+                        <span class="feature-num font-mono text-[11px] font-semibold tracking-widest pt-[5px] shrink-0">02</span>
+                        <div class="feature-line border-l pl-6">
+                            <h3 class="text-[1.35rem] font-semibold text-neutral-900 tracking-tight mb-2 leading-snug">Torrado em Lotes.</h3>
+                            <p class="text-[0.875rem] text-neutral-500 leading-relaxed">Torrado semanalmente sob encomenda em nossa instalação local para garantir frescor.</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-item flex items-start gap-[1.4rem]">
+                        <span class="feature-num font-mono text-[11px] font-semibold tracking-widest pt-[5px] shrink-0">03</span>
+                        <div class="feature-line border-l pl-6">
+                            <h3 class="text-[1.35rem] font-semibold text-neutral-900 tracking-tight mb-2 leading-snug">Perfeitamente Feito.</h3>
+                            <p class="text-[0.875rem] text-neutral-500 leading-relaxed">Perfis curados projetados para destacar o terroir único de cada grão.</p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- BLOCO DO VÍDEO — proporção 16:9, ocupa toda a coluna -->
+                <div class="flex justify-center items-center">
+                    <div id="media-container" class="relative w-full rounded-[1.75rem] overflow-hidden group shadow-[0_32px_80px_-16px_rgba(0,0,0,0.14)] bg-stone-200" style="aspect-ratio: 16/9;">
+
+                        <video id="coffee-video" src="assets/cupvideo.mp4" muted playsinline class="absolute inset-0 w-full h-full object-cover"></video>
+                        <img id="coffee-img" src="assets/cupcoffee.png" alt="Cup Coffee" class="absolute inset-0 w-full h-full object-cover">
+                        <div class="glare-overlay"></div>
+
+                        <!-- BADGE TOPO ESQUERDA — Origem do Grão -->
+                        <div id="badge-origin" class="video-badge badge-top-left">
+                            <div class="badge-icon">
+                                <svg width="13" height="13" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <ellipse cx="7" cy="7" rx="5.5" ry="3.5" stroke="white" stroke-width="1.2" transform="rotate(-35 7 7)"/>
+                                    <line x1="7" y1="2" x2="7" y2="12" stroke="white" stroke-width="1" stroke-linecap="round" transform="rotate(-35 7 7)"/>
+                                </svg>
+                            </div>
+                            <span class="badge-label">Origem Certificada</span>
+                            <span class="badge-value" style="font-size:12px;">Serra da Mantiqueira</span>
+                            <div style="margin-top:0.45rem; display:flex; align-items:center;">
+                                <span class="badge-dot"></span>
+                                <span style="font-size:9px; color:#78716c; letter-spacing:0.06em;">Altitude 1.200m</span>
+                            </div>
+                        </div>
+
+                        <!-- BADGE CANTO INFERIOR DIREITO — Perfil de Torra -->
+                        <div id="badge-roast" class="video-badge badge-bottom-right">
+                            <span class="badge-label">Perfil de Torra</span>
+                            <div style="display:flex; align-items:baseline; gap:3px; margin-bottom:0.35rem;">
+                                <span class="badge-value" style="font-size:1.75rem;">94</span>
+                                <span style="font-size:10px; font-family:'Space Grotesk',sans-serif; font-weight:500; color:#a8a29e;">°C</span>
+                            </div>
+                            <div style="width:100%; height:3px; background: rgba(28,25,23,0.08); border-radius:99px; overflow:hidden;">
+                                <div id="roast-bar" style="width:0%; height:100%; background: linear-gradient(to right, #c2a06e, #6b3a1f); border-radius:99px; transition: width 1.2s cubic-bezier(0.4,0,0.2,1) 0.4s;"></div>
+                            </div>
+                            <span class="badge-label" style="margin-top:0.4rem; margin-bottom:0;">TORRA_MEDIA_ESCURA</span>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
     </section>
 
     <!-- FOLD 3 -->
@@ -283,7 +457,7 @@
         gsap.registerPlugin(ScrollTrigger, Flip);
 
         // ================================================
-        // 1. HERO — ENTRADA DOS TEXTOS (igual ao código de referência)
+        // 1. HERO — ENTRADA DOS TEXTOS
         // ================================================
         const loadTl = gsap.timeline();
         loadTl.fromTo('.hero-anim',
@@ -293,9 +467,6 @@
 
         // ================================================
         // 2. HERO — SAÍDA DOS TEXTOS (scrub bidirecional)
-        // Exatamente como o código de referência:
-        // stagger 0.08, blur, fade, y:-50, scrub:1
-        // ao voltar o scroll os textos reaparecem na mesma animação
         // ================================================
         gsap.to('.hero-anim', {
             y: -50,
@@ -312,14 +483,14 @@
         });
 
         // ================================================
-        // 3. CANVAS — carregamento e render dos frames
+        // 3. CANVAS — frames
         // ================================================
         const canvas = document.getElementById('hero-canvas');
         const ctx    = canvas.getContext('2d', { alpha: false });
 
-        const FRAME_COUNT = 240;
-        const images      = [];
-        const imageSeq    = { frame: 0 };
+        const FRAME_COUNT  = 240;
+        const images       = [];
+        const imageSeq     = { frame: 0 };
         let   imagesLoaded = 0;
 
         function resizeCanvas() {
@@ -346,15 +517,6 @@
             const img = images[frameIndex];
             if (!img || !img.complete) return;
             drawImageCover(img);
-
-            // Quando chega nos frames finais, mostra a xícara real para o Flip
-            if (frameIndex >= FRAME_COUNT - 5) {
-                gsap.set('#cup-origin',   { opacity: 1 });
-                gsap.set('#hero-canvas',  { opacity: 0 });
-            } else {
-                gsap.set('#cup-origin',   { opacity: 0 });
-                gsap.set('#hero-canvas',  { opacity: 0.4 });
-            }
         }
 
         function preloadFrames() {
@@ -372,10 +534,8 @@
         window.addEventListener('resize', resizeCanvas);
 
         // ================================================
-        // 4. HERO — TIMELINE PRINCIPAL (pin + frames scrubados)
+        // 4. HERO — TIMELINE PRINCIPAL (pin + frames)
         // ================================================
-        let cupIsInDestination = false;
-
         const mainTimeline = gsap.timeline({
             scrollTrigger: {
                 trigger: '#hero-container',
@@ -383,13 +543,9 @@
                 end:     '+=4000',
                 scrub:   0.5,
                 pin:     true,
-                // quando a hero é despinada, a fold-2 começa a subir
-                onLeave: () => triggerFold2Enter(),
-                onEnterBack: () => triggerFold2Leave(),
             }
         });
 
-        // Anima os frames
         mainTimeline.to(imageSeq, {
             frame:    FRAME_COUNT - 1,
             ease:     'none',
@@ -397,13 +553,10 @@
         });
 
         // ================================================
-        // 5. SEGUNDA DOBRA — sobe por baixo enquanto a hero despina
-        // O spacer garante que o fold-3 fique no lugar certo
+        // 5. SEGUNDA DOBRA — sobe por baixo da hero
         // ================================================
-        const fold2     = document.getElementById('fold-2');
-        const spacer    = document.getElementById('fold-2-spacer');
-        const video     = document.getElementById('coffee-video');
-        const coffeeImg = document.getElementById('coffee-img');
+        const fold2  = document.getElementById('fold-2');
+        const spacer = document.getElementById('fold-2-spacer');
 
         function syncSpacerHeight() {
             spacer.style.height = fold2.offsetHeight + 'px';
@@ -411,16 +564,12 @@
         syncSpacerHeight();
         window.addEventListener('resize', syncSpacerHeight);
 
-        // A fold-2 sobe de translateY(100%) → translateY(0%)
-        // atrelada ao scroll que vem logo depois do pin da hero
         gsap.fromTo(fold2,
             { y: '100%' },
             {
                 y:    '0%',
                 ease: 'none',
                 scrollTrigger: {
-                    // dispara depois do pin — o ScrollTrigger do pin ocupa 4000px,
-                    // então o spacer começa logo após isso
                     trigger: '#fold-2-spacer',
                     start:   'top bottom',
                     end:     'top top',
@@ -429,30 +578,74 @@
             }
         );
 
-        // Anima os textos e vídeo da fold-2 quando ela chega na tela
-        function triggerFold2Enter() {
-            video.style.opacity     = '1';
+        // ================================================
+        // 6. CARDS + VÍDEO — animações via IntersectionObserver
+        // ================================================
+        const video       = document.getElementById('coffee-video');
+        const coffeeImg   = document.getElementById('coffee-img');
+        const cardsSect   = document.getElementById('cards-section');
+        const badgeOrigin = document.getElementById('badge-origin');
+        const badgeRoast  = document.getElementById('badge-roast');
+        const roastBar    = document.getElementById('roast-bar');
+        let   cardsShown  = false;
+
+        function showCards() {
+            if (cardsShown) return;
+            cardsShown = true;
+
+            video.currentTime  = 0;
+            video.playbackRate = 2.3;
+            video.style.opacity = '1';
             coffeeImg.style.opacity = '0';
-            video.currentTime       = 0;
-            video.playbackRate      = 2.3;
             video.play();
 
             gsap.fromTo('.feature-item',
                 { opacity: 0, filter: 'blur(14px)', y: 12 },
                 { opacity: 1, filter: 'blur(0px)',  y: 0,
-                  duration: 0.85, stagger: 0.25, ease: 'power2.out', delay: 0.4 }
+                  duration: 0.85, stagger: 0.25, ease: 'power2.out', delay: 0.2 }
             );
+
+            setTimeout(() => { badgeOrigin.classList.add('visible'); }, 600);
+            setTimeout(() => {
+                badgeRoast.classList.add('visible');
+                roastBar.style.width = '74%';
+            }, 900);
         }
 
-        function triggerFold2Leave() {
+        function hideCards() {
+            cardsShown = false;
+
+            video.pause();
+            video.style.opacity     = '0';
+            coffeeImg.style.opacity = '0';
+
             gsap.to('.feature-item', {
                 opacity: 0, filter: 'blur(14px)', y: 12,
-                duration: 0.5, stagger: -0.1, ease: 'power2.in'
+                duration: 0.4, stagger: -0.08, ease: 'power2.in'
             });
+
+            badgeOrigin.classList.remove('visible');
+            badgeRoast.classList.remove('visible');
+            roastBar.style.width = '0%';
         }
 
+        const cardsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    showCards();
+                } else {
+                    hideCards();
+                }
+            });
+        }, {
+            root:      null,
+            threshold: 0.25,
+        });
+
+        cardsObserver.observe(cardsSect);
+
         // ================================================
-        // 6. VÍDEO — ao terminar, troca para imagem estática
+        // 7. VÍDEO — troca para imagem estática ao terminar
         // ================================================
         video.onended = () => {
             video.style.opacity     = '0';
