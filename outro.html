@@ -312,14 +312,12 @@
             background: rgba(255,255,255,0.1); flex-shrink: 0;
         }
 
-        /* Touch / swipe hint */
         @keyframes swipe-hint {
             0%, 100% { transform: translateX(0); opacity: 0.4; }
             50% { transform: translateX(8px); opacity: 0.9; }
         }
         .swipe-hint { animation: swipe-hint 2s ease infinite; }
 
-        /* Mobile */
         @media (max-width: 768px) {
             .product-nav-pill { font-size: 10px; padding: 0.3rem 0.75rem; }
             .fold3-layout { flex-direction: column !important; gap: 1.5rem !important; }
@@ -327,54 +325,108 @@
             .fold3-info-col { width: 100% !important; text-align: center; }
             .fold3-info-col .flavor-tags { justify-content: center; }
             .fold3-info-col .btn-row { justify-content: center; }
+            .video-badge { display: none !important; }
+        }
+
+        /* =========================================
+           FOLD 4 — CTA FINAL
+           ========================================= */
+
+        /* ✅ CORREÇÃO: z-index 25 garante que fold-4 fique acima
+           do fold-2 (z-index:15) e fold-3 (z-index:20)
+           impedindo que a seção anterior apareça durante o scroll */
+        #fold-4 {
+            position: relative;
+            z-index: 25;
+            scroll-snap-align: start;
+        }
+
+        .watermark-fold4 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(7rem, 24vw, 24rem);
+            font-weight: 700;
+            line-height: 1;
+            color: transparent;
+            -webkit-text-stroke: 1px rgba(255,255,255,0.025);
+            pointer-events: none;
+            user-select: none;
+            white-space: nowrap;
+            letter-spacing: -0.04em;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 0;
+        }
+
+        .fold4-cta-btn:hover {
+            transform: translateY(-3px) !important;
+            box-shadow: 0 24px 64px -12px rgba(234,234,229,0.22) !important;
+        }
+
+        @media (max-width: 640px) {
+            #fold4-deco { display: none !important; }
+            #fold4-trust { gap: 0.5rem; }
         }
     </style>
 </head>
 <body>
 
-    <!-- NAVBAR -->
-    <header class="fixed w-full z-50 top-0 transition-all duration-300" id="navbar">
+    <header class="fixed w-full z-50 top-0 transition-transform duration-300" id="navbar">
         <div class="absolute inset-0 bg-white/55 backdrop-blur-sm border-b border-stone-200/40"></div>
         <div class="max-w-[1440px] mx-auto px-6 py-4 relative flex justify-between items-center">
             <div class="flex items-center gap-2 group cursor-pointer">
-                <div class="w-8 h-8 bg-stone-900 text-white flex items-center justify-center rounded-sm transition-transform group-hover:rotate-90 duration-500">
-                    <img src="assets/coffeeLogo.png" alt="" class="w-5 h-5 object-contain">
+                <div class="w-10 h-10 flex items-center justify-center transition-transform group-hover:rotate-12 duration-500">
+                    <img src="assets/coffeeLogo.png" alt="Grão Mestre" class="w-full h-full object-contain">
                 </div>
                 <span class="font-display font-medium tracking-tight text-lg">GRÃO MESTRE</span>
             </div>
+
             <nav class="hidden md:flex items-center gap-8 text-xs font-mono uppercase tracking-widest text-stone-500">
                 <a href="#" class="hover:text-stone-900 transition-colors">Origem</a>
                 <a href="#" class="hover:text-stone-900 transition-colors">Torra</a>
                 <a href="#" class="hover:text-stone-900 transition-colors">Assinatura</a>
             </nav>
+
             <div class="flex items-center gap-4">
                 <span class="text-xl cursor-pointer hover:text-stone-500 transition-colors">🛒</span>
                 <div class="hidden md:block w-px h-4 bg-stone-300"></div>
-                <span class="text-xl cursor-pointer md:hidden hover:text-stone-500 transition-colors">☰</span>
+                <button id="btn-mobile" class="text-xl cursor-pointer md:hidden hover:text-stone-500 transition-colors">☰</button>
             </div>
+        </div>
+
+        <div id="mobile-menu" class="fixed inset-0 bg-white z-[60] flex flex-col items-center justify-center gap-8 translate-x-full transition-transform duration-500 ease-in-out md:hidden">
+            <button id="btn-close-mobile" class="absolute top-6 right-6 text-2xl text-stone-900">✕</button>
+            <div class="w-20 h-20 mb-4">
+                <img src="assets/coffeeLogo.png" alt="Logo" class="w-full h-full object-contain">
+            </div>
+            <nav class="flex flex-col items-center gap-6 text-sm font-mono uppercase tracking-[0.2em] text-stone-500">
+                <a href="#" class="hover:text-stone-900">Origem</a>
+                <a href="#" class="hover:text-stone-900">Torra</a>
+                <a href="#" class="hover:text-stone-900">Assinatura</a>
+            </nav>
         </div>
     </header>
 
-    <!-- HERO -->
     <section id="hero-container" class="relative h-screen w-full flex items-center overflow-hidden bg-[#EAEAE5]">
         <canvas id="hero-canvas" class="absolute top-0 left-0 w-full h-full z-0 opacity-40 object-cover"></canvas>
 
-        <div class="content-layer relative z-10 container mx-auto px-8 md:px-16 lg:px-24 w-full flex justify-between items-center pt-24">
-            <div class="max-w-lg">
-                <h1 class="text-5xl md:text-6xl lg:text-7xl font-medium leading-[1.05] tracking-tight mb-6 text-stone-900">
+        <div class="content-layer relative z-10 container mx-auto px-6 md:px-16 lg:px-24 w-full flex justify-between items-end md:items-center pt-24 h-full pb-20 md:pb-0">
+            <div class="max-w-[260px] sm:max-w-xs md:max-w-lg mb-10 md:mb-0">
+                <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-medium leading-[1.05] tracking-tight mb-4 md:mb-6 text-stone-900">
                     <div class="hero-anim inline-block text-outline">Grão Mestre</div><br>
                     <div class="hero-anim inline-block">em cada xícara.</div>
                 </h1>
-                <p class="hero-anim text-base md:text-lg text-stone-500 mb-10 max-w-md leading-relaxed font-light">
+                <p class="hero-anim text-xs sm:text-sm md:text-lg text-stone-500 mb-6 md:mb-10 max-w-md leading-relaxed font-light">
                     Redefinimos o equilíbrio entre aroma, corpo e acidez. Feito para paladares que exigem a perfeição da torra artesanal em cada extração.
                 </p>
-                <div class="flex items-center gap-4">
-                    <button class="group relative px-8 py-4 bg-stone-900 text-white rounded-full overflow-hidden shadow-lg hover:shadow-xl transition-all hover:-translate-y-1 hero-anim">
-                        <span class="relative z-10 text-sm font-medium tracking-wide">Comprar Agora</span>
+                <div class="flex items-center gap-3 md:gap-4 flex-wrap">
+                    <button class="group relative px-6 md:px-8 py-3 md:py-4 bg-stone-900 text-white rounded-full overflow-hidden shadow-lg hover:shadow-xl transition-all hover:-translate-y-1 hero-anim">
+                        <span class="relative z-10 text-xs md:text-sm font-medium tracking-wide">Comprar Agora</span>
                         <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out"></div>
                     </button>
-                    <button class="group px-8 py-4 bg-white text-stone-900 rounded-full shadow-md hover:shadow-lg border border-transparent hover:border-stone-200 transition-all hover:-translate-y-1 flex items-center gap-2 hero-anim relative overflow-hidden">
-                        <span class="text-sm font-medium tracking-wide relative z-10">Explorar</span>
+                    <button class="group px-6 md:px-8 py-3 md:py-4 bg-white text-stone-900 rounded-full shadow-md hover:shadow-lg border border-transparent hover:border-stone-200 transition-all hover:-translate-y-1 flex items-center gap-2 hero-anim relative overflow-hidden">
+                        <span class="text-xs md:text-sm font-medium tracking-wide relative z-10">Explorar</span>
                         <span class="group-hover:translate-y-0.5 transition-transform relative z-10">↓</span>
                         <div class="absolute inset-0 bg-gradient-to-r from-transparent via-stone-900/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out"></div>
                     </button>
@@ -394,10 +446,8 @@
         </div>
     </section>
 
-    <!-- SPACER -->
     <div id="fold-2-spacer" class="bg-[#EAEAE5]"></div>
 
-    <!-- SEGUNDA DOBRA -->
     <section id="fold-2" class="bg-[#F5F5F3] overflow-y-auto">
 
         <div id="fold2-header" class="relative w-full overflow-hidden border-b border-stone-200 py-20 px-8 md:px-16 lg:px-24">
@@ -426,7 +476,7 @@
         <div id="cards-section" class="flex items-center justify-center py-20 px-8 md:px-16 lg:px-24">
             <div class="max-w-[1440px] mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
 
-                <div class="flex flex-col gap-6 lg:pr-8">
+                <div class="flex flex-col gap-6 lg:pr-8 order-2 lg:order-1">
                     <div class="feature-item flex items-start gap-[1.4rem]">
                         <span class="feature-num font-mono text-[11px] font-semibold tracking-widest pt-[5px] shrink-0">01</span>
                         <div class="feature-line border-l pl-6">
@@ -450,7 +500,7 @@
                     </div>
                 </div>
 
-                <div class="flex justify-center items-center">
+                <div class="flex justify-center items-center order-1 lg:order-2">
                     <div id="media-container" class="relative w-full rounded-[1.75rem] overflow-hidden group shadow-[0_32px_80px_-16px_rgba(0,0,0,0.14)] bg-stone-200" style="aspect-ratio: 16/9;">
                         <video id="coffee-video" src="assets/cupvideo.mp4" muted playsinline class="absolute inset-0 w-full h-full object-cover"></video>
                         <img id="coffee-img" src="assets/cupcoffee.png" alt="Cup Coffee" class="absolute inset-0 w-full h-full object-cover">
@@ -489,20 +539,14 @@
         </div>
     </section>
 
-    <!-- =====================================================
-         FOLD 3 — SHOWCASE DE PRODUTOS
-         ===================================================== -->
     <section id="fold-3" class="relative w-full" style="min-height:100vh;">
 
-        <!-- Gradiente de fundo radial sutil -->
         <div class="absolute inset-0 pointer-events-none" style="background:radial-gradient(ellipse at 25% 60%, rgba(194,160,110,0.07) 0%, transparent 55%), radial-gradient(ellipse at 75% 40%, rgba(107,58,31,0.09) 0%, transparent 55%);"></div>
 
-        <!-- Watermark de fundo -->
         <span class="watermark-fold3">GRÃO</span>
 
         <div class="relative z-10 flex flex-col" style="min-height:100vh; padding-top:7rem; padding-bottom:3rem;">
 
-            <!-- Topo: label + título + pills -->
             <div class="flex flex-col items-center gap-5 px-6">
                 <div class="flex items-center gap-3">
                     <span style="width:6px;height:6px;border-radius:50%;background:#57534e;display:inline-block;"></span>
@@ -514,7 +558,6 @@
                     Escolha o seu grão.
                 </h2>
 
-                <!-- Pills nav -->
                 <div id="product-nav" class="flex items-center gap-2 flex-wrap justify-center" style="margin-top:0.5rem;">
                     <button class="product-nav-pill active" data-index="0">Mantiqueira Natural</button>
                     <button class="product-nav-pill" data-index="1">Cerrado Honey</button>
@@ -522,15 +565,13 @@
                 </div>
             </div>
 
-            <!-- Palco — área de posição relativa onde os slides ficam absolute -->
             <div id="product-stage" class="relative flex-1" style="min-height:480px; margin-top:2.5rem;">
 
-                <!-- SLIDE 0 — Mantiqueira Natural -->
                 <div class="product-slide" id="slide-0">
                     <div class="fold3-layout flex items-center justify-center gap-10 lg:gap-20 w-full max-w-[1080px] px-6 md:px-12">
                         <div class="fold3-image-col product-img-wrap" style="flex:0 0 auto;width:clamp(180px,28vw,360px);">
                             <div class="product-glow" style="background:#c2a06e;"></div>
-                            <img src="assets/cafe1.avif" alt="Mantiqueira Natural" style="width:100%;object-fit:contain;filter:drop-shadow(0 40px 64px rgba(0,0,0,0.55));transform:rotate(-4deg);">
+                            <img src="assets/cafe1.png" alt="Mantiqueira Natural" style="width:100%;object-fit:contain;filter:drop-shadow(0 40px 64px rgba(0,0,0,0.55));transform:rotate(-4deg);">
                         </div>
                         <div class="fold3-info-col" style="flex:1;max-width:420px;">
                             <div class="flex items-center gap-3" style="margin-bottom:1.25rem;">
@@ -545,9 +586,9 @@
                                 Colhida a mão a 1.400m de altitude na Serra da Mantiqueira. Processo natural que intensifica as notas frutadas e o dulçor característico do terroir de montanha.
                             </p>
                             <div class="flavor-tags flex flex-wrap gap-2" style="margin-bottom:1.4rem;">
-                                <span class="flavor-tag"><span class="dot" style="background:#d97706;"></span>Caramelo</span>
-                                <span class="flavor-tag"><span class="dot" style="background:#dc2626;"></span>Frutas Vermelhas</span>
-                                <span class="flavor-tag"><span class="dot" style="background:#92400e;"></span>Cacau</span>
+                                <span class="flavor-tag"><span class="dot" style="background:#c2a06e;"></span>Caramelo</span>
+                                <span class="flavor-tag"><span class="dot" style="background:#a8a29e;"></span>Frutas Vermelhas</span>
+                                <span class="flavor-tag"><span class="dot" style="background:#78716c;"></span>Cacau</span>
                             </div>
                             <div style="margin-bottom:1.75rem;">
                                 <div style="display:flex;justify-content:space-between;margin-bottom:0.45rem;">
@@ -555,26 +596,17 @@
                                     <span style="font-size:9px;font-family:'Space Grotesk',sans-serif;font-weight:600;color:rgba(255,255,255,0.38);">78%</span>
                                 </div>
                                 <div class="intensity-track">
-                                    <div class="intensity-fill" data-width="78%" style="width:0%;background:linear-gradient(to right,#c2a06e,#d97706);"></div>
+                                    <div class="intensity-fill" data-width="78%" style="width:0%;background:linear-gradient(to right,#c2a06e,#78716c);"></div>
                                 </div>
-                            </div>
-                            <div class="btn-row flex items-center gap-4">
-                                <button class="btn-fold3">
-                                    <span style="position:relative;z-index:1;">Ver Produto</span>
-                                    <svg width="13" height="13" viewBox="0 0 14 14" fill="none" style="position:relative;z-index:1;"><path d="M2 7h10M8 3l4 4-4 4" stroke="#1c1917" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                    <span class="shine"></span>
-                                </button>
-                                <span style="font-size:17px;font-family:'Space Grotesk',sans-serif;font-weight:300;color:rgba(255,255,255,0.55);">R$ 89,90</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- SLIDE 1 — Cerrado Honey -->
                 <div class="product-slide" id="slide-1">
                     <div class="fold3-layout flex items-center justify-center gap-10 lg:gap-20 w-full max-w-[1080px] px-6 md:px-12">
                         <div class="fold3-image-col product-img-wrap" style="flex:0 0 auto;width:clamp(180px,28vw,360px);">
-                            <div class="product-glow" style="background:#f59e0b;"></div>
+                            <div class="product-glow" style="background:#8b5a2b;"></div>
                             <img src="assets/cafe2.avif" alt="Cerrado Honey" style="width:100%;object-fit:contain;filter:drop-shadow(0 40px 64px rgba(0,0,0,0.55));transform:rotate(3deg);">
                         </div>
                         <div class="fold3-info-col" style="flex:1;max-width:420px;">
@@ -584,15 +616,15 @@
                                 <span style="font-size:9px;font-family:'Space Grotesk',sans-serif;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.22);">Processo Honey</span>
                             </div>
                             <h3 class="font-display text-white" style="font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:600;letter-spacing:-0.025em;line-height:1.05;margin-bottom:0.6rem;">
-                                Cerrado<br><span style="color:#f59e0b;">Honey</span>
+                                Cerrado<br><span style="color:#8b5a2b;">Honey</span>
                             </h3>
                             <p style="font-size:13px;color:rgba(255,255,255,0.42);font-weight:300;line-height:1.75;margin-bottom:1.4rem;max-width:340px;">
                                 Do Cerrado Mineiro, onde o clima seco e o solo fértil criam condições únicas. O processo honey preserva a mucilagem do grão, resultando em um corpo denso e dulçor de mel silvestre.
                             </p>
                             <div class="flavor-tags flex flex-wrap gap-2" style="margin-bottom:1.4rem;">
-                                <span class="flavor-tag"><span class="dot" style="background:#f59e0b;"></span>Mel</span>
-                                <span class="flavor-tag"><span class="dot" style="background:#fbbf24;"></span>Baunilha</span>
-                                <span class="flavor-tag"><span class="dot" style="background:#a16207;"></span>Nozes</span>
+                                <span class="flavor-tag"><span class="dot" style="background:#8b5a2b;"></span>Mel</span>
+                                <span class="flavor-tag"><span class="dot" style="background:#a8a29e;"></span>Baunilha</span>
+                                <span class="flavor-tag"><span class="dot" style="background:#78716c;"></span>Nozes</span>
                             </div>
                             <div style="margin-bottom:1.75rem;">
                                 <div style="display:flex;justify-content:space-between;margin-bottom:0.45rem;">
@@ -600,26 +632,17 @@
                                     <span style="font-size:9px;font-family:'Space Grotesk',sans-serif;font-weight:600;color:rgba(255,255,255,0.38);">62%</span>
                                 </div>
                                 <div class="intensity-track">
-                                    <div class="intensity-fill" data-width="62%" style="width:0%;background:linear-gradient(to right,#f59e0b,#fbbf24);"></div>
+                                    <div class="intensity-fill" data-width="62%" style="width:0%;background:linear-gradient(to right,#8b5a2b,#a8a29e);"></div>
                                 </div>
-                            </div>
-                            <div class="btn-row flex items-center gap-4">
-                                <button class="btn-fold3">
-                                    <span style="position:relative;z-index:1;">Ver Produto</span>
-                                    <svg width="13" height="13" viewBox="0 0 14 14" fill="none" style="position:relative;z-index:1;"><path d="M2 7h10M8 3l4 4-4 4" stroke="#1c1917" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                    <span class="shine"></span>
-                                </button>
-                                <span style="font-size:17px;font-family:'Space Grotesk',sans-serif;font-weight:300;color:rgba(255,255,255,0.55);">R$ 94,90</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- SLIDE 2 — Sul de Minas Reserve -->
                 <div class="product-slide" id="slide-2">
                     <div class="fold3-layout flex items-center justify-center gap-10 lg:gap-20 w-full max-w-[1080px] px-6 md:px-12">
                         <div class="fold3-image-col product-img-wrap" style="flex:0 0 auto;width:clamp(180px,28vw,360px);">
-                            <div class="product-glow" style="background:#7c3aed;"></div>
+                            <div class="product-glow" style="background:#3e2723;"></div>
                             <img src="assets/cafe3.avif" alt="Sul de Minas Reserve" style="width:100%;object-fit:contain;filter:drop-shadow(0 40px 64px rgba(0,0,0,0.55));transform:rotate(-2deg);">
                         </div>
                         <div class="fold3-info-col" style="flex:1;max-width:420px;">
@@ -629,15 +652,15 @@
                                 <span style="font-size:9px;font-family:'Space Grotesk',sans-serif;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.22);">Reserve Collection</span>
                             </div>
                             <h3 class="font-display text-white" style="font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:600;letter-spacing:-0.025em;line-height:1.05;margin-bottom:0.6rem;">
-                                Sul de Minas<br><span style="color:#a78bfa;">Reserve</span>
+                                Sul de Minas<br><span style="color:#8d6e63;">Reserve</span>
                             </h3>
                             <p style="font-size:13px;color:rgba(255,255,255,0.42);font-weight:300;line-height:1.75;margin-bottom:1.4rem;max-width:340px;">
                                 Nossa expressão máxima. Grãos selecionados individualmente, fermentados em tanques de inox por 72 horas. Uma complexidade aromática que só o Sul de Minas consegue oferecer.
                             </p>
                             <div class="flavor-tags flex flex-wrap gap-2" style="margin-bottom:1.4rem;">
-                                <span class="flavor-tag"><span class="dot" style="background:#7c3aed;"></span>Ameixa</span>
-                                <span class="flavor-tag"><span class="dot" style="background:#6b3a1f;"></span>Tabaco</span>
-                                <span class="flavor-tag"><span class="dot" style="background:#059669;"></span>Jasmim</span>
+                                <span class="flavor-tag"><span class="dot" style="background:#3e2723;"></span>Ameixa</span>
+                                <span class="flavor-tag"><span class="dot" style="background:#5d4037;"></span>Tabaco</span>
+                                <span class="flavor-tag"><span class="dot" style="background:#795548;"></span>Jasmim</span>
                             </div>
                             <div style="margin-bottom:1.75rem;">
                                 <div style="display:flex;justify-content:space-between;margin-bottom:0.45rem;">
@@ -645,24 +668,15 @@
                                     <span style="font-size:9px;font-family:'Space Grotesk',sans-serif;font-weight:600;color:rgba(255,255,255,0.38);">91%</span>
                                 </div>
                                 <div class="intensity-track">
-                                    <div class="intensity-fill" data-width="91%" style="width:0%;background:linear-gradient(to right,#7c3aed,#a78bfa);"></div>
+                                    <div class="intensity-fill" data-width="91%" style="width:0%;background:linear-gradient(to right,#3e2723,#5d4037);"></div>
                                 </div>
-                            </div>
-                            <div class="btn-row flex items-center gap-4">
-                                <button class="btn-fold3">
-                                    <span style="position:relative;z-index:1;">Ver Produto</span>
-                                    <svg width="13" height="13" viewBox="0 0 14 14" fill="none" style="position:relative;z-index:1;"><path d="M2 7h10M8 3l4 4-4 4" stroke="#1c1917" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                    <span class="shine"></span>
-                                </button>
-                                <span style="font-size:17px;font-family:'Space Grotesk',sans-serif;font-weight:300;color:rgba(255,255,255,0.55);">R$ 129,90</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-            </div><!-- /product-stage -->
+            </div>
 
-            <!-- Rodapé: dots + hint -->
             <div class="flex flex-col items-center gap-3" style="padding-bottom:1rem;">
                 <div id="progress-dots" class="flex items-center gap-2">
                     <div class="progress-dot active" data-index="0"></div>
@@ -678,12 +692,122 @@
         </div>
     </section>
 
+    <!-- ================================================
+         FOLD 4 — CTA FINAL
+         ================================================ -->
+    <section id="fold-4" class="relative w-full overflow-hidden" style="min-height:100vh; background-color:#1C1917;">
+
+        <div class="absolute inset-0 pointer-events-none" style="background: radial-gradient(ellipse at 10% 90%, rgba(194,160,110,0.10) 0%, transparent 50%), radial-gradient(ellipse at 90% 10%, rgba(107,58,31,0.13) 0%, transparent 50%);"></div>
+
+        <div class="absolute top-0 left-0 right-0" style="height:1px; background: linear-gradient(to right, transparent, rgba(255,255,255,0.07), transparent);"></div>
+
+        <span class="watermark-fold4">MESTRE</span>
+
+        <div id="fold4-deco" class="absolute pointer-events-none select-none hidden sm:block" style="right:-4%; bottom:-4%; width:clamp(220px,32vw,480px); will-change:transform;">
+            <img src="assets/cafe1.png" alt="" style="width:100%; object-fit:contain; filter:drop-shadow(0 40px 80px rgba(0,0,0,0.65)) brightness(0.75); transform:rotate(-6deg);">
+            <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 100%, rgba(194,160,110,0.25) 0%, transparent 60%);pointer-events:none;"></div>
+        </div>
+
+        <div class="relative z-10 flex flex-col items-center justify-center text-center px-6 md:px-16 lg:px-24" style="min-height:100vh; padding-top:5rem; padding-bottom:5rem;">
+
+            <div id="fold4-tag" class="flex items-center gap-3 mb-8">
+                <span style="width:5px;height:5px;border-radius:50%;background:rgba(194,160,110,0.65);display:inline-block;"></span>
+                <span style="font-size:10px;font-family:'Space Grotesk',sans-serif;font-weight:500;letter-spacing:0.28em;text-transform:uppercase;color:rgba(255,255,255,0.32);">Nossa Loja Online</span>
+                <span style="width:5px;height:5px;border-radius:50%;background:rgba(194,160,110,0.65);display:inline-block;"></span>
+            </div>
+
+            <h2 id="fold4-title" class="font-display text-white" style="font-size:clamp(2.4rem,6.5vw,5.5rem);font-weight:600;line-height:1.05;letter-spacing:-0.03em;max-width:860px;margin-bottom:1.5rem;">
+                Seu próximo café<br>
+                <em style="font-style:normal;color:#c2a06e;">favorito</em> está aqui.
+            </h2>
+
+            <p id="fold4-desc" style="font-size:clamp(0.875rem,1.6vw,1.05rem);color:rgba(255,255,255,0.36);font-family:'Inter',sans-serif;font-weight:300;max-width:460px;line-height:1.85;margin-bottom:2.75rem;">
+                Torra artesanal, grãos selecionados à mão e entrega para todo o Brasil. Experimente a diferença de um café que respeita cada etapa da cadeia.
+            </p>
+
+            <a id="fold4-btn" href="https://grao-mestre-demo.vercel.app" target="_blank" rel="noopener"
+                class="fold4-cta-btn group relative inline-flex items-center gap-3 overflow-hidden"
+                style="padding:1.05rem 2.4rem;background:#EAEAE5;color:#1c1917;border-radius:99px;font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:600;letter-spacing:0.07em;text-decoration:none;cursor:pointer;transition:transform 0.4s ease, box-shadow 0.4s ease;">
+                <span class="relative z-10">Explorar a Loja</span>
+                <span class="relative z-10 transition-transform duration-300 group-hover:translate-x-1.5" style="font-size:15px;">→</span>
+                <div class="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out pointer-events-none" style="background:linear-gradient(to right,transparent,rgba(255,255,255,0.45),transparent);"></div>
+            </a>
+
+            <a id="fold4-btn-sec" href="https://grao-mestre-demo.vercel.app/products" target="_blank" rel="noopener"
+                class="group relative inline-flex items-center gap-2 mt-4 overflow-hidden"
+                style="padding:0.65rem 1.5rem;border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.38);border-radius:99px;font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;text-decoration:none;cursor:pointer;transition:border-color 0.3s ease, color 0.3s ease;">
+                <span class="transition-colors group-hover:text-white">Ver todos os produtos</span>
+            </a>
+
+            <div id="fold4-divider" class="flex items-center gap-5 mt-16 mb-10" style="width:100%;max-width:600px;">
+                <div style="flex:1;height:1px;background:rgba(255,255,255,0.07);"></div>
+                <span style="font-size:9px;font-family:'Space Grotesk',sans-serif;letter-spacing:0.25em;text-transform:uppercase;color:rgba(255,255,255,0.15);">Por que a gente?</span>
+                <div style="flex:1;height:1px;background:rgba(255,255,255,0.07);"></div>
+            </div>
+
+            <div id="fold4-trust" class="flex items-stretch justify-center flex-wrap gap-0">
+
+                <div class="flex flex-col items-center px-7 md:px-12 py-2">
+                    <div class="flex items-baseline gap-1">
+                        <span class="fold4-num font-display font-semibold text-white" data-target="100" style="font-size:clamp(1.75rem,3.5vw,2.6rem);letter-spacing:-0.04em;line-height:1;">0</span>
+                        <span style="font-size:clamp(0.9rem,1.5vw,1.2rem);font-family:'Space Grotesk',sans-serif;font-weight:600;color:#c2a06e;">%</span>
+                    </div>
+                    <span style="font-size:9px;font-family:'Space Grotesk',sans-serif;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.22);margin-top:0.5rem;">Arábica Puro</span>
+                </div>
+
+                <div style="width:1px;background:rgba(255,255,255,0.07);flex-shrink:0;" class="hidden sm:block"></div>
+
+                <div class="flex flex-col items-center px-7 md:px-12 py-2">
+                    <div class="flex items-baseline gap-1">
+                        <span class="fold4-num font-display font-semibold text-white" data-target="72" style="font-size:clamp(1.75rem,3.5vw,2.6rem);letter-spacing:-0.04em;line-height:1;">0</span>
+                        <span style="font-size:clamp(0.9rem,1.5vw,1.2rem);font-family:'Space Grotesk',sans-serif;font-weight:600;color:#c2a06e;">h</span>
+                    </div>
+                    <span style="font-size:9px;font-family:'Space Grotesk',sans-serif;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.22);margin-top:0.5rem;">Frescor Garantido</span>
+                </div>
+
+                <div style="width:1px;background:rgba(255,255,255,0.07);flex-shrink:0;" class="hidden sm:block"></div>
+
+                <div class="flex flex-col items-center px-7 md:px-12 py-2">
+                    <div class="flex items-baseline gap-1">
+                        <span class="fold4-num font-display font-semibold text-white" data-target="500" style="font-size:clamp(1.75rem,3.5vw,2.6rem);letter-spacing:-0.04em;line-height:1;">0</span>
+                        <span style="font-size:clamp(0.9rem,1.5vw,1.2rem);font-family:'Space Grotesk',sans-serif;font-weight:600;color:#c2a06e;">+</span>
+                    </div>
+                    <span style="font-size:9px;font-family:'Space Grotesk',sans-serif;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.22);margin-top:0.5rem;">Clientes Ativos</span>
+                </div>
+
+            </div>
+
+            <p id="fold4-footer" style="font-size:9px;font-family:'Space Grotesk',sans-serif;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.1);margin-top:4rem;">
+                GRÃO MESTRE © 2025 — TORRA ARTESANAL BRASILEIRA
+            </p>
+
+        </div>
+    </section>
+
+    
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/Flip.min.js"></script>
 
     <script>
         gsap.registerPlugin(ScrollTrigger, Flip);
+
+        // ================================================
+        // 0. HEADER HIDE/SHOW ON SCROLL
+        // ================================================
+        let lastScrollHeader = window.scrollY;
+        const mainNavbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.scrollY;
+            if (currentScroll > lastScrollHeader && currentScroll > 80) {
+                mainNavbar.style.transform = 'translateY(-100%)';
+            } else {
+                mainNavbar.style.transform = 'translateY(0)';
+            }
+            lastScrollHeader = currentScroll;
+
+        }, { passive: true });
 
         // ================================================
         // 1. HERO — ENTRADA DOS TEXTOS
@@ -887,13 +1011,11 @@
         const pills = document.querySelectorAll('.product-nav-pill');
         const dots  = document.querySelectorAll('.progress-dot');
 
-        // Estado inicial: slide 0 visível no centro
         gsap.set(slides[0], { opacity: 1, x: 0, y: 0, rotation: 0, scale: 1 });
         gsap.set(slides[1], { opacity: 0, x: '-120%', y: '60%', rotation: -35, scale: 0.7 });
         gsap.set(slides[2], { opacity: 0, x: '-120%', y: '60%', rotation: -35, scale: 0.7 });
         slides[0].classList.add('is-active');
 
-        // Anima barra de intensidade do slide inicial
         function animateIntensityBar(slideEl) {
             const bar = slideEl.querySelector('.intensity-fill');
             if (!bar) return;
@@ -902,31 +1024,21 @@
         }
         animateIntensityBar(slides[0]);
 
-        // Atualiza pills e dots
         function updateNav(idx) {
             pills.forEach((p, i) => p.classList.toggle('active', i === idx));
             dots.forEach((d, i)  => d.classList.toggle('active', i === idx));
         }
 
-        // Função central de transição
-
-                // Função central de transição com efeito de giro circular
         function goTo(next, direction) {
             if (animating || next === current) return;
             animating = true;
 
             const outSlide = slides[current];
             const inSlide  = slides[next];
-
-            // Direção: 1 = avança (próximo), -1 = volta (anterior)
             const dir = direction !== undefined ? direction : (next > current ? 1 : -1);
 
-            // Remove is-active do atual
             outSlide.classList.remove('is-active');
 
-            // Posição de ENTRADA do novo slide:
-            // Vem de baixo-esquerda descrevendo um arco, como se fosse
-            // o ponto oposto de um relógio subindo para o centro
             gsap.set(inSlide, {
                 opacity:  0,
                 x:        dir > 0 ? '-130%' : '130%',
@@ -944,18 +1056,16 @@
                 }
             });
 
-            // SAÍDA — slide atual roda para baixo e some
             tl.to(outSlide, {
                 opacity:  0,
                 x:        dir > 0 ? '110%'  : '-110%',
                 y:        '55%',
-                rotation: dir > 0 ? 38       : -38,
+                rotation: dir > 0 ? 38 : -38,
                 scale:    0.68,
                 duration: 0.72,
                 ease:     'power3.in',
             }, 0);
 
-            // ENTRADA — novo slide sobe da curva para o centro
             tl.to(inSlide, {
                 opacity:  1,
                 x:        0,
@@ -964,9 +1074,8 @@
                 scale:    1,
                 duration: 0.85,
                 ease:     'power3.out',
-            }, 0.22); // começa ligeiramente depois da saída
+            }, 0.22);
 
-            // Fundo radial pulsa levemente na troca
             tl.fromTo('#fold-3 > div:first-child',
                 { opacity: 0.5 },
                 { opacity: 1, duration: 0.6, ease: 'power2.out' },
@@ -976,7 +1085,6 @@
             updateNav(next);
         }
 
-        // Pills de navegação
         pills.forEach((pill) => {
             pill.addEventListener('click', () => {
                 const idx = parseInt(pill.dataset.index);
@@ -985,7 +1093,6 @@
             });
         });
 
-        // Dots de navegação
         dots.forEach((dot) => {
             dot.addEventListener('click', () => {
                 const idx = parseInt(dot.dataset.index);
@@ -994,27 +1101,30 @@
             });
         });
 
-        // Scroll com wheel dentro da fold-3 — troca de produto
         let wheelCooldown = false;
 
         document.getElementById('fold-3').addEventListener('wheel', (e) => {
-            e.preventDefault();
-            if (wheelCooldown || animating) return;
-            wheelCooldown = true;
-            setTimeout(() => { wheelCooldown = false; }, 900);
-
+            if (animating) {
+                e.preventDefault();
+                return;
+            }
             if (e.deltaY > 0) {
-                // Scroll para baixo — próximo produto
-                const next = (current + 1) % TOTAL;
-                goTo(next, 1);
+                if (current === TOTAL - 1) return;
+                e.preventDefault();
+                if (wheelCooldown) return;
+                wheelCooldown = true;
+                setTimeout(() => { wheelCooldown = false; }, 900);
+                goTo(current + 1, 1);
             } else {
-                // Scroll para cima — produto anterior
-                const prev = (current - 1 + TOTAL) % TOTAL;
-                goTo(prev, -1);
+                if (current === 0) return;
+                e.preventDefault();
+                if (wheelCooldown) return;
+                wheelCooldown = true;
+                setTimeout(() => { wheelCooldown = false; }, 900);
+                goTo(current - 1, -1);
             }
         }, { passive: false });
 
-        // Touch / swipe para mobile
         let touchStartX = 0;
         let touchStartY = 0;
 
@@ -1027,41 +1137,35 @@
             if (animating) return;
             const dx = e.changedTouches[0].clientX - touchStartX;
             const dy = e.changedTouches[0].clientY - touchStartY;
-
-            // Só detecta swipe horizontal
             if (Math.abs(dx) < Math.abs(dy) || Math.abs(dx) < 40) return;
-
             if (dx < 0) {
-                // Swipe para esquerda — próximo
-                goTo((current + 1) % TOTAL, 1);
+                if (current < TOTAL - 1) goTo(current + 1, 1);
             } else {
-                // Swipe para direita — anterior
-                goTo((current - 1 + TOTAL) % TOTAL, -1);
+                if (current > 0) goTo(current - 1, -1);
             }
         }, { passive: true });
 
-        // Keyboard — setas do teclado
         document.addEventListener('keydown', (e) => {
             if (animating) return;
             const fold3 = document.getElementById('fold-3');
             const rect  = fold3.getBoundingClientRect();
-            // Só ativa se a fold-3 estiver visível na tela
             if (rect.top > window.innerHeight || rect.bottom < 0) return;
-
             if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
-                e.preventDefault();
-                goTo((current + 1) % TOTAL, 1);
+                if (current < TOTAL - 1) {
+                    e.preventDefault();
+                    goTo(current + 1, 1);
+                }
             } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
-                e.preventDefault();
-                goTo((current - 1 + TOTAL) % TOTAL, -1);
+                if (current > 0) {
+                    e.preventDefault();
+                    goTo(current - 1, -1);
+                }
             }
         });
 
-        // Entrada da fold-3 na viewport — anima o slide inicial
         new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    // Faz o slide 0 entrar com suavidade na primeira vez
                     gsap.fromTo(slides[current],
                         { opacity: 0, y: 30, filter: 'blur(12px)' },
                         { opacity: 1, y: 0,  filter: 'blur(0px)', duration: 0.9, ease: 'power3.out' }
@@ -1070,6 +1174,112 @@
                 }
             });
         }, { root: null, threshold: 0.2 }).observe(document.getElementById('fold-3'));
+
+        // ================================================
+        // 9. MENU MOBILE TOGGLE
+        // ================================================
+        const btnMobile      = document.getElementById('btn-mobile');
+        const mobileMenu     = document.getElementById('mobile-menu');
+        const btnCloseMobile = document.getElementById('btn-close-mobile');
+
+        if (btnMobile && mobileMenu && btnCloseMobile) {
+            btnMobile.addEventListener('click', () => {
+                mobileMenu.classList.remove('translate-x-full');
+                mobileMenu.classList.add('translate-x-0');
+                document.body.style.overflow = 'hidden';
+            });
+            btnCloseMobile.addEventListener('click', () => {
+                mobileMenu.classList.remove('translate-x-0');
+                mobileMenu.classList.add('translate-x-full');
+                document.body.style.overflow = '';
+            });
+            mobileMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.remove('translate-x-0');
+                    mobileMenu.classList.add('translate-x-full');
+                    document.body.style.overflow = '';
+                });
+            });
+        }
+
+        // ================================================
+        // 10. FOLD 4 — CTA FINAL
+        // ================================================
+        gsap.set('#fold4-tag',     { opacity: 0, y: 24, filter: 'blur(10px)' });
+        gsap.set('#fold4-title',   { opacity: 0, y: 48, filter: 'blur(14px)' });
+        gsap.set('#fold4-desc',    { opacity: 0, y: 32, filter: 'blur(8px)'  });
+        gsap.set('#fold4-btn',     { opacity: 0, y: 28, filter: 'blur(8px)'  });
+        gsap.set('#fold4-btn-sec', { opacity: 0, y: 20, filter: 'blur(6px)'  });
+        gsap.set('#fold4-divider', { opacity: 0, scaleX: 0.6 });
+        gsap.set('#fold4-trust',   { opacity: 0, y: 24, filter: 'blur(6px)'  });
+        gsap.set('#fold4-footer',  { opacity: 0 });
+        gsap.set('#fold4-deco',    { opacity: 0, y: 70 });
+
+        let fold4CountersAnimated = false;
+        let fold4ParallaxOn = false;
+
+        function runFold4Counters() {
+            if (fold4CountersAnimated) return;
+            fold4CountersAnimated = true;
+            document.querySelectorAll('.fold4-num').forEach(el => {
+                const target   = parseInt(el.dataset.target, 10);
+                const duration = 1400;
+                const start    = performance.now();
+                (function tick(now) {
+                    const elapsed  = now - start;
+                    const progress = Math.min(elapsed / duration, 1);
+                    const eased    = 1 - Math.pow(1 - progress, 3);
+                    el.textContent = Math.floor(eased * target);
+                    if (progress < 1) requestAnimationFrame(tick);
+                    else el.textContent = target;
+                })(performance.now());
+            });
+        }
+
+        function animateFold4In() {
+            fold4ParallaxOn = true;
+            gsap.to('#fold4-deco',    { opacity: 0.55, y: 0, duration: 1.6, ease: 'power3.out', delay: 0.05 });
+            gsap.to('#fold4-tag',     { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.7, ease: 'power3.out', delay: 0.2 });
+            gsap.to('#fold4-title',   { opacity: 1, y: 0, filter: 'blur(0px)', duration: 1.0, ease: 'power3.out', delay: 0.38 });
+            gsap.to('#fold4-desc',    { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.9, ease: 'power3.out', delay: 0.56 });
+            gsap.to('#fold4-btn',     { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.8, ease: 'power3.out', delay: 0.72 });
+            gsap.to('#fold4-btn-sec', { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.7, ease: 'power3.out', delay: 0.84 });
+            gsap.to('#fold4-divider', { opacity: 1, scaleX: 1, duration: 0.9, ease: 'power2.out', delay: 0.95 });
+            gsap.to('#fold4-trust',   { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.85, ease: 'power3.out', delay: 1.08, onComplete: runFold4Counters });
+            gsap.to('#fold4-footer',  { opacity: 1, duration: 0.7, ease: 'power2.out', delay: 1.3 });
+        }
+
+        function animateFold4Out() {
+            fold4ParallaxOn       = false;
+            fold4CountersAnimated = false;
+            gsap.to('#fold4-deco',    { opacity: 0, y: 70, duration: 0.35, ease: 'power2.in' });
+            gsap.to('#fold4-tag',     { opacity: 0, y: 24, filter: 'blur(10px)', duration: 0.28 });
+            gsap.to('#fold4-title',   { opacity: 0, y: 48, filter: 'blur(14px)', duration: 0.32 });
+            gsap.to('#fold4-desc',    { opacity: 0, y: 32, filter: 'blur(8px)',  duration: 0.28 });
+            gsap.to('#fold4-btn',     { opacity: 0, y: 28, filter: 'blur(8px)',  duration: 0.25 });
+            gsap.to('#fold4-btn-sec', { opacity: 0, y: 20, filter: 'blur(6px)',  duration: 0.22 });
+            gsap.to('#fold4-divider', { opacity: 0, scaleX: 0.6, duration: 0.25 });
+            gsap.to('#fold4-trust',   { opacity: 0, y: 24, filter: 'blur(6px)',  duration: 0.25 });
+            gsap.to('#fold4-footer',  { opacity: 0, duration: 0.2 });
+            document.querySelectorAll('.fold4-num').forEach(el => { el.textContent = '0'; });
+        }
+
+        window.addEventListener('scroll', () => {
+            if (!fold4ParallaxOn) return;
+            const fold4 = document.getElementById('fold-4');
+            if (!fold4) return;
+            const rect = fold4.getBoundingClientRect();
+            if (rect.top > window.innerHeight || rect.bottom < 0) return;
+            const progress = Math.max(0, Math.min(1, -rect.top / (rect.height || 1)));
+            gsap.set('#fold4-deco', { y: progress * -60, rotation: -6 + progress * 3 });
+        }, { passive: true });
+
+        new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) animateFold4In();
+                else animateFold4Out();
+            });
+        }, { root: null, threshold: 0.18 }).observe(document.getElementById('fold-4'));
 
     </script>
 </body>
