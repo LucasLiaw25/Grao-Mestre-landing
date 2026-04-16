@@ -7,373 +7,44 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #EAEAE5;
-            color: #1C1917;
-            overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        .font-display { font-family: 'Space Grotesk', sans-serif; }
-
-        .hero-anim { will-change: transform, opacity, filter; }
-
-        .text-outline {
-            color: #ffffff;
-            -webkit-text-stroke: 1px #000000;
-            text-stroke: 1px #000000;
-            text-shadow: 0 0 1px rgba(0,0,0,0.15);
-        }
-
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #EAEAE5; }
-        ::-webkit-scrollbar-thumb { background: #d6d3d1; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #a8a29e; }
-
-        @keyframes scroll-line {
-            0% { transform: translateY(-100%); }
-            100% { transform: translateY(100%); }
-        }
-        .animate-scroll-line {
-            animation: scroll-line 1.5s cubic-bezier(0.77, 0, 0.175, 1) infinite;
-        }
-
-        #fold-2-spacer {
-            position: relative;
-            z-index: 5;
-            background-color: #EAEAE5;
-        }
-
-        .feature-item {
-            opacity: 0;
-            filter: blur(14px);
-            transform: translateY(12px);
-            padding: 1.5rem;
-            border-radius: 1rem;
-            background-color: transparent;
-            border: 1px solid transparent;
-            cursor: crosshair;
-            transition:
-                background-color 0.5s ease 0.3s,
-                box-shadow 0.5s ease 0.3s,
-                border-color 0.5s ease 0.3s;
-        }
-        .feature-item:hover {
-            background-color: #ffffff;
-            box-shadow: 0 12px 36px -12px rgba(0,0,0,0.08);
-            border-color: #f5f5f4;
-            transition:
-                background-color 0.5s ease 0s,
-                box-shadow 0.5s ease 0s,
-                border-color 0.5s ease 0s;
-        }
-
-        .feature-num { color: #a8a29e; transition: color 0.5s ease 0.3s; }
-        .feature-item:hover .feature-num { color: #1c1917; transition: color 0.5s ease 0s; }
-
-        .feature-line { border-color: rgba(214,210,209,0.6); transition: border-color 0.5s ease 0.3s; }
-        .feature-item:hover .feature-line { border-color: #1c1917; transition: border-color 0.5s ease 0s; }
-
-        .feature-item h3 { transition: transform 0.5s ease 0.3s; }
-        .feature-item:hover h3 { transform: translateY(-2px); transition: transform 0.5s ease 0s; }
-
-        .feature-item p { transition: color 0.5s ease 0.3s, transform 0.5s ease 0.3s; }
-        .feature-item:hover p { color: #444; transform: translateY(-2px); transition: color 0.5s ease 0s, transform 0.5s ease 0s; }
-
-        #coffee-video, #coffee-img {
-            opacity: 0;
-            transition: opacity 0.5s ease;
-            will-change: opacity;
-        }
-
-        .glare-overlay {
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(to bottom,
-                rgba(255,255,255,0) 0%,
-                rgba(255,255,255,0.5) 50%,
-                rgba(255,255,255,0) 100%);
-            transform: translateY(-100%);
-            transition: transform 0.6s cubic-bezier(0.4,0,0.2,1);
-            pointer-events: none;
-            z-index: 10;
-        }
-        #media-container:hover .glare-overlay { transform: translateY(100%); }
-        #media-container { cursor: crosshair; }
-
-        .video-badge {
-            position: absolute;
-            z-index: 20;
-            background: rgba(255,255,255,0.72);
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
-            border: 1px solid rgba(255,255,255,0.6);
-            border-radius: 0.875rem;
-            box-shadow: 0 8px 32px -8px rgba(0,0,0,0.12), 0 2px 8px -2px rgba(0,0,0,0.06);
-            pointer-events: none;
-            opacity: 0;
-            transform: translateY(8px);
-            transition: opacity 0.5s ease, transform 0.5s ease;
-        }
-        .video-badge.visible { opacity: 1; transform: translateY(0); }
-
-        .badge-top-left { top: 1.1rem; left: 1.1rem; padding: 0.7rem 0.9rem; min-width: 130px; }
-        .badge-bottom-right { bottom: 1.1rem; right: 1.1rem; padding: 0.8rem 1rem; min-width: 150px; }
-
-        .badge-label {
-            font-family: 'Space Grotesk', monospace;
-            font-size: 9px; font-weight: 500;
-            letter-spacing: 0.18em; text-transform: uppercase;
-            color: #a8a29e; display: block; margin-bottom: 0.3rem;
-        }
-        .badge-value {
-            font-family: 'Space Grotesk', sans-serif;
-            font-weight: 600; color: #1c1917; line-height: 1; display: block;
-        }
-        .badge-dot {
-            width: 6px; height: 6px; border-radius: 50%;
-            background: #22c55e; display: inline-block;
-            margin-right: 5px; position: relative; flex-shrink: 0;
-        }
-        .badge-dot::after {
-            content: ''; position: absolute; inset: -3px;
-            border-radius: 50%; background: rgba(34,197,94,0.25);
-            animation: pulse-dot 2s ease infinite;
-        }
-        @keyframes pulse-dot {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.5); opacity: 0; }
-        }
-        .badge-icon {
-            width: 26px; height: 26px; background: #1c1917;
-            border-radius: 6px; display: flex;
-            align-items: center; justify-content: center; margin-bottom: 0.45rem;
-        }
-
-        #fold-2 {
-            position: fixed; bottom: 0; left: 0;
-            width: 100%; min-height: 100vh;
-            z-index: 15; transform: translateY(100%);
-            will-change: transform;
-        }
-
-        #fold-3 { position: relative; z-index: 20; }
-
-        .watermark-text {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: clamp(5rem, 14vw, 14rem); font-weight: 700;
-            line-height: 1; color: transparent;
-            -webkit-text-stroke: 1px rgba(28,25,23,0.06);
-            pointer-events: none; user-select: none;
-            white-space: nowrap; letter-spacing: -0.03em;
-        }
-
-        #fold2-tag, #fold2-title-line1,
-        #fold2-title-line2, #fold2-description {
-            will-change: transform, opacity, filter;
-        }
-
-        /* =========================================
-           FOLD 3 — SHOWCASE DE PRODUTOS
-           ========================================= */
-        #fold-3 {
-            background-color: #1C1917;
-            min-height: 100vh;
-            overflow: hidden;
-        }
-
-        .product-slide {
-            position: absolute;
-            inset: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            pointer-events: none;
-            opacity: 0;
-            will-change: transform, opacity;
-        }
-        .product-slide.is-active {
-            pointer-events: auto;
-        }
-
-        .product-nav-pill {
-            position: relative;
-            padding: 0.35rem 1.1rem;
-            border-radius: 99px;
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 11px; font-weight: 500;
-            letter-spacing: 0.12em; text-transform: uppercase;
-            color: rgba(255,255,255,0.35);
-            border: 1px solid rgba(255,255,255,0.1);
-            cursor: pointer;
-            transition: color 0.3s ease, border-color 0.3s ease, background 0.3s ease;
-            background: transparent; white-space: nowrap;
-        }
-        .product-nav-pill.active {
-            color: #1c1917; background: #EAEAE5; border-color: #EAEAE5;
-        }
-        .product-nav-pill:not(.active):hover {
-            color: rgba(255,255,255,0.7);
-            border-color: rgba(255,255,255,0.25);
-        }
-
-        .product-img-wrap {
-            position: relative;
-            display: flex; align-items: center; justify-content: center;
-        }
-
-        .product-glow {
-            position: absolute; bottom: -10%; left: 50%;
-            transform: translateX(-50%);
-            width: 70%; height: 50px;
-            border-radius: 50%; filter: blur(28px);
-            opacity: 0.5; pointer-events: none;
-            transition: opacity 0.6s ease;
-        }
-
-        .flavor-tag {
-            display: inline-flex; align-items: center; gap: 5px;
-            padding: 0.3rem 0.75rem; border-radius: 99px;
-            border: 1px solid rgba(255,255,255,0.12);
-            background: rgba(255,255,255,0.05);
-            font-size: 10px; font-family: 'Space Grotesk', sans-serif;
-            font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase;
-            color: rgba(255,255,255,0.5);
-        }
-        .flavor-tag .dot {
-            width: 5px; height: 5px;
-            border-radius: 50%; flex-shrink: 0;
-        }
-
-        .intensity-track {
-            width: 100%; height: 2px;
-            background: rgba(255,255,255,0.08);
-            border-radius: 99px; overflow: hidden;
-        }
-        .intensity-fill {
-            height: 100%; border-radius: 99px;
-            transition: width 1s cubic-bezier(0.4,0,0.2,1) 0.3s;
-        }
-
-        .btn-fold3 {
-            display: inline-flex; align-items: center; gap: 8px;
-            padding: 0.85rem 1.75rem;
-            background: #EAEAE5; color: #1c1917;
-            border-radius: 99px;
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 13px; font-weight: 500; letter-spacing: 0.06em;
-            cursor: pointer; border: none;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            position: relative; overflow: hidden;
-        }
-        .btn-fold3:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 32px -8px rgba(0,0,0,0.4);
-        }
-        .btn-fold3 .shine {
-            position: absolute; inset: 0;
-            background: linear-gradient(to right, transparent, rgba(255,255,255,0.4), transparent);
-            transform: translateX(-100%);
-            transition: transform 0.8s ease;
-        }
-        .btn-fold3:hover .shine { transform: translateX(100%); }
-
-        .product-counter {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 11px; font-weight: 500;
-            letter-spacing: 0.2em; color: rgba(255,255,255,0.25);
-        }
-
-        .progress-dot {
-            width: 4px; height: 4px; border-radius: 50%;
-            background: rgba(255,255,255,0.2);
-            transition: width 0.4s ease, background 0.4s ease, border-radius 0.4s ease;
-            cursor: pointer;
-        }
-        .progress-dot.active {
-            width: 20px; border-radius: 99px; background: #EAEAE5;
-        }
-
-        .watermark-fold3 {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: clamp(6rem, 18vw, 18rem); font-weight: 700;
-            line-height: 1; color: transparent;
-            -webkit-text-stroke: 1px rgba(255,255,255,0.04);
-            pointer-events: none; user-select: none;
-            white-space: nowrap; letter-spacing: -0.04em;
-            position: absolute; bottom: -2rem; left: 50%;
-            transform: translateX(-50%);
-        }
-
-        .deco-line {
-            background: rgba(255,255,255,0.1); flex-shrink: 0;
-        }
-
-        @keyframes swipe-hint {
-            0%, 100% { transform: translateX(0); opacity: 0.4; }
-            50% { transform: translateX(8px); opacity: 0.9; }
-        }
-        .swipe-hint { animation: swipe-hint 2s ease infinite; }
-
-        @media (max-width: 768px) {
-            .product-nav-pill { font-size: 10px; padding: 0.3rem 0.75rem; }
-            .fold3-layout { flex-direction: column !important; gap: 1.5rem !important; }
-            .fold3-image-col { width: 200px !important; }
-            .fold3-info-col { width: 100% !important; text-align: center; }
-            .fold3-info-col .flavor-tags { justify-content: center; }
-            .fold3-info-col .btn-row { justify-content: center; }
-            .video-badge { display: none !important; }
-        }
-
-        /* =========================================
-           FOLD 4 — CTA FINAL
-           ========================================= */
-
-        /* ✅ CORREÇÃO: z-index 25 garante que fold-4 fique acima
-           do fold-2 (z-index:15) e fold-3 (z-index:20)
-           impedindo que a seção anterior apareça durante o scroll */
-        #fold-4 {
-            position: relative;
-            z-index: 25;
-            scroll-snap-align: start;
-        }
-
-        .watermark-fold4 {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: clamp(7rem, 24vw, 24rem);
-            font-weight: 700;
-            line-height: 1;
-            color: transparent;
-            -webkit-text-stroke: 1px rgba(255,255,255,0.025);
-            pointer-events: none;
-            user-select: none;
-            white-space: nowrap;
-            letter-spacing: -0.04em;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 0;
-        }
-
-        .fold4-cta-btn:hover {
-            transform: translateY(-3px) !important;
-            box-shadow: 0 24px 64px -12px rgba(234,234,229,0.22) !important;
-        }
-
-        @media (max-width: 640px) {
-            #fold4-deco { display: none !important; }
-            #fold4-trust { gap: 0.5rem; }
-        }
-    </style>
 </head>
 <body>
 
+    <div id="preloader" role="status" aria-label="Carregando assets do site">
+        <div class="preloader-card">
+            <div class="preloader-header">
+                <span class="preloader-title">GRÃO MESTRE</span>
+                <span class="preloader-subtitle">Café de alto padrão em preparo</span>
+            </div>
+            <div class="coffee-scene" data-testid="preloader-coffee">
+                <div class="cup-plate">
+                    <div class="cup">
+                        <div class="coffee-surface"></div>
+                        <span class="steam"></span>
+                        <span class="steam"></span>
+                        <span class="steam"></span>
+                    </div>
+                </div>
+                <div class="bean-row" aria-hidden="true">
+                    <span class="bean"></span>
+                    <span class="bean"></span>
+                    <span class="bean"></span>
+                </div>
+            </div>
+            <div class="progress-wrapper">
+                <div class="progress-bar" aria-hidden="true">
+                    <div class="progress-bar-fill"></div>
+                </div>
+                <div class="progress-label" id="preloader-percent">0%</div>
+            </div>
+            <p class="hint">Passe o mouse sobre a xícara enquanto os aromas se acomodam.</p>
+        </div>
+    </div>
+
     <header class="fixed w-full z-50 top-0 transition-transform duration-300" id="navbar">
-        <div class="absolute inset-0 bg-white/55 backdrop-blur-sm border-b border-stone-200/40"></div>
+        <div class="absolute inset-0 bg-white/95 backdrop-blur-sm border-b border-stone-200/40"></div>
         <div class="max-w-[1440px] mx-auto px-6 py-4 relative flex justify-between items-center">
             <div class="flex items-center gap-2 group cursor-pointer">
                 <div class="w-10 h-10 flex items-center justify-center transition-transform group-hover:rotate-12 duration-500">
@@ -383,9 +54,9 @@
             </div>
 
             <nav class="hidden md:flex items-center gap-8 text-xs font-mono uppercase tracking-widest text-stone-500">
-                <a href="#" class="hover:text-stone-900 transition-colors">Origem</a>
-                <a href="#" class="hover:text-stone-900 transition-colors">Torra</a>
-                <a href="#" class="hover:text-stone-900 transition-colors">Assinatura</a>
+                <a href="#fold-2" class="hover:text-stone-900 transition-colors">Origem</a>
+                <a href="#fold-3" class="hover:text-stone-900 transition-colors">Torra</a>
+                <a href="#fold-4" class="hover:text-stone-900 transition-colors">Loja</a>
             </nav>
 
             <div class="flex items-center gap-4">
@@ -395,15 +66,36 @@
             </div>
         </div>
 
-        <div id="mobile-menu" class="fixed inset-0 bg-white z-[60] flex flex-col items-center justify-center gap-8 translate-x-full transition-transform duration-500 ease-in-out md:hidden">
-            <button id="btn-close-mobile" class="absolute top-6 right-6 text-2xl text-stone-900">✕</button>
-            <div class="w-20 h-20 mb-4">
+        <div id="mobile-overlay" class="fixed inset-0 bg-stone-900/40 z-[55] opacity-0 pointer-events-none transition-opacity duration-300 md:hidden"></div>
+
+        <div id="mobile-menu" class="fixed top-0 right-0 bottom-0 w-[80vw] max-w-sm bg-[#EAEAE5] border-l border-stone-200/50 shadow-[-20px_0_40px_rgba(0,0,0,0.1)] z-[60] flex flex-col items-start pt-24 px-10 gap-10 translate-x-full transition-transform duration-500 ease-in-out md:hidden">
+            <button id="btn-close-mobile" class="absolute top-6 right-6 text-2xl text-stone-400 hover:text-stone-900 transition-colors">✕</button>
+            
+            <div class="w-16 h-16 mb-2">
                 <img src="assets/coffeeLogo.png" alt="Logo" class="w-full h-full object-contain">
             </div>
-            <nav class="flex flex-col items-center gap-6 text-sm font-mono uppercase tracking-[0.2em] text-stone-500">
-                <a href="#" class="hover:text-stone-900">Origem</a>
-                <a href="#" class="hover:text-stone-900">Torra</a>
-                <a href="#" class="hover:text-stone-900">Assinatura</a>
+            
+            <nav class="flex flex-col items-start gap-8 text-sm font-mono uppercase tracking-[0.2em] text-stone-500 w-full">
+                <a href="#fold-2" class="hover:text-stone-900 flex items-center gap-4 transition-colors">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+                    </svg>
+                    Origem
+                </a>
+                <a href="#fold-3" class="hover:text-stone-900 flex items-center gap-4 transition-colors">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.601a8.983 8.983 0 013.361-6.866 8.21 8.21 0 003 2.48z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 18a3.75 3.75 0 00.495-7.467 5.99 5.99 0 00-1.925 3.546 5.974 5.974 0 01-2.133-1A3.75 3.75 0 0012 18z" />
+                    </svg>
+                    Torra
+                </a>
+                <a href="#fold-4" class="hover:text-stone-900 flex items-center gap-4 transition-colors">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm5.25 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                    </svg>
+                    Loja
+                </a>
             </nav>
         </div>
     </header>
@@ -692,9 +384,6 @@
         </div>
     </section>
 
-    <!-- ================================================
-         FOLD 4 — CTA FINAL
-         ================================================ -->
     <section id="fold-4" class="relative w-full overflow-hidden" style="min-height:100vh; background-color:#1C1917;">
 
         <div class="absolute inset-0 pointer-events-none" style="background: radial-gradient(ellipse at 10% 90%, rgba(194,160,110,0.10) 0%, transparent 50%), radial-gradient(ellipse at 90% 10%, rgba(107,58,31,0.13) 0%, transparent 50%);"></div>
@@ -792,6 +481,61 @@
 
     <script>
         gsap.registerPlugin(ScrollTrigger, Flip);
+
+        const preloader = document.getElementById('preloader');
+        const progressFill = document.querySelector('#preloader .progress-bar-fill');
+        const progressLabel = document.getElementById('preloader-percent');
+        const assetImages = Array.from(document.images).filter(img => img.closest('#preloader') === null);
+        let assetsLoaded = 0;
+        const totalAssets = Math.max(assetImages.length, 1);
+
+        const updateLoader = () => {
+            const percent = Math.min(100, Math.round((assetsLoaded / totalAssets) * 100));
+            progressLabel.textContent = `${percent}%`;
+            progressFill.style.width = `${percent}%`;
+        };
+
+        const onAssetEvent = () => {
+            assetsLoaded += 1;
+            updateLoader();
+        };
+
+        assetImages.forEach(img => {
+            if (img.complete && img.naturalWidth !== 0) {
+                assetsLoaded += 1;
+            } else {
+                img.addEventListener('load', onAssetEvent, { once: true });
+                img.addEventListener('error', onAssetEvent, { once: true });
+            }
+        });
+
+        updateLoader();
+
+        window.addEventListener('load', () => {
+            assetsLoaded = totalAssets;
+            updateLoader();
+
+            gsap.timeline()
+                .to('#preloader .preloader-card', { y: -24, opacity: 0.85, duration: 0.6, ease: 'power3.out' })
+                .to('#preloader .progress-bar-fill', { scaleX: 1.05, duration: 0.4, ease: 'power1.out' }, 0)
+                .to('#preloader', { opacity: 0, duration: 0.8, ease: 'power3.inOut', delay: 0.2 })
+                .set('#preloader', { css: { display: 'none' } });
+
+            document.querySelectorAll('#preloader .bean').forEach((bean, index) => {
+                bean.addEventListener('pointerenter', () => {
+                    gsap.to(bean, { y: -8, rotation: index % 2 ? 8 : -8, duration: 0.25, ease: 'power2.out' });
+                });
+                bean.addEventListener('pointerleave', () => {
+                    gsap.to(bean, { y: 0, rotation: 0, duration: 0.35, ease: 'power2.out' });
+                });
+            });
+
+            document.querySelector('#preloader .coffee-scene').addEventListener('pointermove', event => {
+                const rect = event.currentTarget.getBoundingClientRect();
+                const x = ((event.clientX - rect.left) / rect.width - 0.5) * 10;
+                gsap.to('#preloader .cup', { rotation: x, duration: 0.5, ease: 'power2.out' });
+            });
+        });
 
         // ================================================
         // 0. HEADER HIDE/SHOW ON SCROLL
@@ -1176,29 +920,41 @@
         }, { root: null, threshold: 0.2 }).observe(document.getElementById('fold-3'));
 
         // ================================================
-        // 9. MENU MOBILE TOGGLE
+        // 9. MENU MOBILE TOGGLE (LATERAL)
         // ================================================
         const btnMobile      = document.getElementById('btn-mobile');
         const mobileMenu     = document.getElementById('mobile-menu');
         const btnCloseMobile = document.getElementById('btn-close-mobile');
+        const mobileOverlay  = document.getElementById('mobile-overlay');
 
-        if (btnMobile && mobileMenu && btnCloseMobile) {
-            btnMobile.addEventListener('click', () => {
+        function openMobileMenu() {
+            mobileOverlay.classList.remove('hidden');
+            // Request animation frame to ensure display:block happens before opacity transition
+            requestAnimationFrame(() => {
+                mobileOverlay.classList.remove('opacity-0');
                 mobileMenu.classList.remove('translate-x-full');
                 mobileMenu.classList.add('translate-x-0');
-                document.body.style.overflow = 'hidden';
             });
-            btnCloseMobile.addEventListener('click', () => {
-                mobileMenu.classList.remove('translate-x-0');
-                mobileMenu.classList.add('translate-x-full');
-                document.body.style.overflow = '';
-            });
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeMobileMenu() {
+            mobileMenu.classList.remove('translate-x-0');
+            mobileMenu.classList.add('translate-x-full');
+            mobileOverlay.classList.add('opacity-0');
+            setTimeout(() => {
+                mobileOverlay.classList.add('hidden');
+            }, 300);
+            document.body.style.overflow = '';
+        }
+
+        if (btnMobile && mobileMenu && btnCloseMobile) {
+            btnMobile.addEventListener('click', openMobileMenu);
+            btnCloseMobile.addEventListener('click', closeMobileMenu);
+            if(mobileOverlay) mobileOverlay.addEventListener('click', closeMobileMenu);
+
             mobileMenu.querySelectorAll('a').forEach(link => {
-                link.addEventListener('click', () => {
-                    mobileMenu.classList.remove('translate-x-0');
-                    mobileMenu.classList.add('translate-x-full');
-                    document.body.style.overflow = '';
-                });
+                link.addEventListener('click', closeMobileMenu);
             });
         }
 
@@ -1280,6 +1036,29 @@
                 else animateFold4Out();
             });
         }, { root: null, threshold: 0.18 }).observe(document.getElementById('fold-4'));
+
+        // ================================================
+        // 11. SCROLL SUAVE PARA LINKS DE NAVEGAÇÃO
+        // ================================================
+        document.querySelectorAll('nav a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                let targetEl = document.querySelector(targetId);
+
+                // Como a Seção 2 é position:fixed, precisamos dar scroll até o spacer que empurra o conteúdo
+                if (targetId === '#fold-2') {
+                    targetEl = document.getElementById('fold-2-spacer');
+                }
+
+                if (targetEl) {
+                    window.scrollTo({
+                        top: targetEl.offsetTop,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
 
     </script>
 </body>
